@@ -1,33 +1,26 @@
 package com.jonikoone.dictionaryforlearning
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import androidx.appcompat.app.AppCompatActivity
-import com.jonikoone.dictionaryforlearning.screens.HomeScreen
-import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
-import org.koin.core.parameter.parametersOf
-import ru.terrakok.cicerone.Cicerone
-import ru.terrakok.cicerone.Router
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
+import com.jonikoone.dictionaryforlearning.fragments.home.HomeFragment
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-
-    val cicerone: Cicerone<Router> by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        cicerone.router.newRootScreen(HomeScreen)
 
-    }
+        val navController = findNavController(R.id.fragmentNavigationHost)
+        NavScreens.navController = navController
+        NavigationUI.setupWithNavController(mainBottomNavigation, navController)
 
-    override fun onResume() {
-        super.onResume()
-        cicerone.navigatorHolder.setNavigator(get { parametersOf(this) })
-    }
 
-    override fun onPause() {
-        super.onPause()
-        cicerone.navigatorHolder.removeNavigator()
     }
 }

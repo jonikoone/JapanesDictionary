@@ -34,6 +34,20 @@ android {
     android.buildFeatures {
         dataBinding = true
     }
+
+    sourceSets {
+        main {
+            res.srcDirs =
+                    [
+                            'src/main/res/layouts/common',
+                            'src/main/res/layouts/dictionary',
+                            'src/main/res/layouts/labels',
+                            'src/main/res/layouts/other',
+                            'src/main/res/layouts/words',
+                            'src/main/res'
+                    ]
+        }
+    }
 }
 
 dependencies {
@@ -48,14 +62,26 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
     kapt 'com.android.databinding:compiler:3.2.1'
 
-    implementation "com.squareup.okhttp3:okhttp:4.3.1"
+    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.squareup.retrofit2:retrofit:2.7.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.7.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
     implementation 'ru.terrakok.cicerone:cicerone:5.1.0'
+
+    def nav_version = "2.3.0-alpha03"
+
+    // Kotlin
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    // Dynamic Feature Module Support
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+
 
     def room_version = "2.2.4"
     implementation "androidx.room:room-runtime:$room_version"
@@ -69,7 +95,9 @@ dependencies {
 
     //implementation 'com.github.jonikoone:SimpleStateMachine:0.3.1'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    // Testing Navigation
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 }

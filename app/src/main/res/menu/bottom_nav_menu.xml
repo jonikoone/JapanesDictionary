@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!--  <item
+        android:id="@+id/dictionaryFragment"
+        android:title="Dictionary"
+        android:icon="@drawable/ic_dictionary"
+        />
+
+
+
+    <item
+        android:id="@+id/wordDictionary"
+        android:title="Words"
+        android:icon="@drawable/ic_words"
+        />
+
+    <item
+        android:id="@+id/testsFragment"
+        android:title="Test"
+        android:icon="@drawable/ic_testing"/>
+
+
+
+    <item
+        android:id="@+id/statisticsFragment"
+        android:title="Statistic"
+        android:icon="@drawable/ic_chart_statistic"/>-->
+
+    <item
+        android:id="@+id/labelListFragment"
+        android:title="Labels"
+        android:icon="@drawable/ic_label"
+        />
+
+
+</menu>

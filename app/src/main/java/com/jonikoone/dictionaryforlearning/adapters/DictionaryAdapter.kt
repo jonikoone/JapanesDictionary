@@ -1,3 +1,4 @@
+/*
 package com.jonikoone.dictionaryforlearning.adapters
 
 import android.view.LayoutInflater
@@ -7,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.databinding.FragmentItemWordBinding
-import com.jonikoone.dictionaryforlearning.entites.Word
+import com.jonikoone.dictionaryforlearning.database.entites.Word
 import com.jonikoone.dictionaryforlearning.viewmodels.ItemFragmentViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.get
@@ -111,6 +112,7 @@ abstract class CallbackDiffUtil<in T>(
 }
 
 
+*/
 /*class DictionaryAdapter
     : CommonAdapter()
     , KoinComponent {
@@ -153,5 +155,7 @@ class WordsDiffUtil(private val oldList: List<Word>, private val newList: List<W
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition].word == newList[newItemPosition].word
     }
-}*/
+}*//*
 
+
+*/

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/labelListFragment">
+
+    <fragment
+        android:id="@+id/labelListFragment"
+        android:name="com.jonikoone.dictionaryforlearning.fragments.labels.LabelListFragment"
+        android:label="LabelListFragment"
+        tools:layout="@layout/fragment_labels_list">
+        <action
+            android:id="@+id/action_labelListFragment_to_labelItemFragment"
+            app:destination="@id/labelItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/labelItemFragment"
+        android:name="com.jonikoone.dictionaryforlearning.fragments.labels.LabelItemFragment"
+        android:label="LabelItemFragment"
+        tools:layout="@layout/fragment_label" >
+        <action
+            android:id="@+id/action_labelItemFragment_to_dialogColorPeacker"
+            app:destination="@id/dialogColorPeacker" />
+    </fragment>
+    <fragment
+        android:id="@+id/dialogColorPeacker"
+        android:name="com.jonikoone.dictionaryforlearning.fragments.DialogColorPeacker"
+        android:label="DialogColorPeacker" />
+</navigation>
