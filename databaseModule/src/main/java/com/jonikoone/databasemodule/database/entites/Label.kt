@@ -1,4 +1,4 @@
-package com.jonikoone.dictionaryforlearning.database.entites
+package com.jonikoone.databasemodule.database.entites
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -13,7 +13,7 @@ data class Label(
     @ColumnInfo(name = "label_title", defaultValue = "")
     val title: String = "",
     @ColumnInfo(name = "label_difficulty", defaultValue = "0")
-    val difficulty: Byte = 0,
+    val difficulty: Int = 0,
     @ColumnInfo(name = "label_color", defaultValue = "0")
     val color: Int
 ) : Serializable

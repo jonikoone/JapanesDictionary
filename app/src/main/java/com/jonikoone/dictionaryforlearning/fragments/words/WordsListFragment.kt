@@ -6,29 +6,31 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import com.jonikoone.dictionaryforlearning.R
+import com.jonikoone.dictionaryforlearning.databinding.FragmentWordsListBinding
+import com.jonikoone.dictionaryforlearning.viewmodels.words.WordsListViewModel
+import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class WordsListFragment : Fragment() {
 
-/*
-    companion object {
-        fun newInstance() = WordsListFragment()
-    }
-
-    private lateinit var viewModel: WordsListViewModel
+    private val viewModel: WordsListViewModel by viewModel { parametersOf(null) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_words_list, container, false)
+        val binding = DataBindingUtil.inflate<FragmentWordsListBinding>(
+            inflater,
+            R.layout.fragment_words_list,
+            container,
+            false
+        )
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(WordsListViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
-*/
 }

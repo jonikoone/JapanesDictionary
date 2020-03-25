@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.jonikoone.dictionaryforlearning.R
-import com.jonikoone.dictionaryforlearning.util.BaseFragment
 
-class DictionaryFragment : BaseFragment() {
+class DictionaryFragment : Fragment() {
 
-  /*  val viewModelDict: DictionaryViewModel by viewModel()
+  /*val viewModelDict: DictionaryViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,5 +21,6 @@ class DictionaryFragment : BaseFragment() {
         binding.viewModel = viewModelDict
         return binding.root
     }*/
+
 
 }

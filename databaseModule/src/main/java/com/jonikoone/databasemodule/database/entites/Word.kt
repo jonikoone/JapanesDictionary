@@ -1,35 +1,32 @@
-package com.jonikoone.dictionaryforlearning.database.entites
+package com.jonikoone.databasemodule.database.entites
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-/*@Entity(tableName = "words")
+@Entity(tableName = "words")
 data class Word(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id_word")
-    val id: Long,
+    val id: Long = 0,
     @ColumnInfo(name = "word", defaultValue = "")
     val word: String = "",
     @ColumnInfo(name = "word_case", defaultValue = "")
     val caseWord: String = "",
     @ColumnInfo(name = "word_translate", defaultValue = "")
-    val translate: String = "",
-    @Embedded
-    val statistic: CommonStatisticWord = CommonStatisticWord()
+    val translate: String = ""
 ) : Serializable
 
-data class CommonStatisticWord(
+/*data class CommonStatisticWord(
     @ColumnInfo(name = "word_statistic_count_testing", defaultValue = "0")
     val countTesting: Int = 0,
     @ColumnInfo(name = "word_statistic_count_failed", defaultValue = "0")
     val failedTry: Int = 0
-)
+)*/
 
 
-@Entity(tableName = "tests")
+/*@Entity(tableName = "tests")
 data class Test(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id_test")
@@ -49,18 +46,18 @@ data class TestWordCrossRef(
     val idWord: Long,
     @ColumnInfo(name = "id_test")
     val idTest: Long
-)
+)*/
 
 
-@Entity(tableName = "label_word_cross_ref", primaryKeys = ["id_label", "id_word"])
+/*@Entity(tableName = "label_word_cross_ref", primaryKeys = ["id_label", "id_word"])
 data class LabelWordCrossRef(
     @ColumnInfo(name = "id_label")
     val idLabel: Long,
     @ColumnInfo(name = "id_word")
     val idWord: Long
-)
+)*/
 
-@Entity(tableName = "label_test_cross_ref", primaryKeys = ["id_label", "id_test"])
+/*@Entity(tableName = "label_test_cross_ref", primaryKeys = ["id_label", "id_test"])
 data class LabelTestCrossRef(
     @ColumnInfo(name = "id_label")
     val idLabel: Long,

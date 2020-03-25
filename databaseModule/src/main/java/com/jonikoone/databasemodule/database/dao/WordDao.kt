@@ -1,17 +1,17 @@
-package com.jonikoone.dictionaryforlearning.database.dao
-/*
+package com.jonikoone.databasemodule.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.jonikoone.dictionaryforlearning.database.entites.Word
+import com.jonikoone.databasemodule.database.entites.Word
 
 @Dao
 interface WordDao {
 
     @Query("Select * From words")
-    fun getWords(): List<Word>
+    fun getWords(): LiveData<List<Word>>
 
     @Query("Select * From words where id_word = :id")
     fun getWord(id: Long): Word
@@ -27,12 +27,14 @@ interface WordDao {
 
 
     @Insert
-    fun addWord(word: Word)
+    fun addWord(word: Word = Word())
 
 
     @Update
     fun updateWord(word: Word)
 
+    /*@Query("select * from words where wor")
+    fun getWordsFromDictionary(dictionaryId: Long)*/
 
 
-}*/
+}

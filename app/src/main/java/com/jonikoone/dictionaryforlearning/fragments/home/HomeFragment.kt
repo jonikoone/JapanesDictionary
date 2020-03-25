@@ -1,5 +1,6 @@
 package com.jonikoone.dictionaryforlearning.fragments.home
 
+/*
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,4 +22,4 @@ class HomeFragment : BaseFragment() {
         return LayoutInflater.from(context).inflate(R.layout.fragment_home, container, false)
     }
 
-}
+}*/

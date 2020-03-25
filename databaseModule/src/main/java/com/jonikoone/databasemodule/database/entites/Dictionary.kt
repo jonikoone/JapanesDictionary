@@ -1,4 +1,4 @@
-package com.jonikoone.dictionaryforlearning.database.entites
+package com.jonikoone.databasemodule.database.entites
 
 data class Dictionary(
     val id: Long,

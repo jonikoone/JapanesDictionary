@@ -1,33 +1,42 @@
 package com.jonikoone.dictionaryforlearning.viewmodels.words
 
-/*import android.view.LayoutInflater
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.jonikoone.databasemodule.database.AppDatabase
+import com.jonikoone.databasemodule.database.entites.Word
 import com.jonikoone.dictionaryforlearning.R
-import com.jonikoone.dictionaryforlearning.database.entites.Word
 import com.jonikoone.dictionaryforlearning.databinding.ItemWordBinding
 import com.jonikoone.dictionaryforlearning.util.BaseAdapter
 import com.jonikoone.dictionaryforlearning.util.DiffCallback
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.get
+import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
-import kotlin.coroutines.CoroutineContext
+import timber.log.Timber
 
-open class WordsListViewModel(val dictionaryId: Long? = null) : ViewModel(), CoroutineScope {
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
+open class WordsListViewModel(val dictionaryId: Long? = null) : ViewModel(), KoinComponent {
 
-    val titleDictionary: MutableLiveData<String> = MutableLiveData("")
+    val database by inject<AppDatabase>()
+
+    val titleDictionary: MutableLiveData<String> = MutableLiveData("All Words")
     val adapter = WordsAdapter()
 
     init {
-        launch(Dispatchers.IO) {
+        database.getWordDao().getWords().observeForever {
+            adapter.updateList(it)
+        }
+    }
 
+    fun addWord() {
+        viewModelScope.launch(Dispatchers.IO) {
+            Timber.d("add Word")
+            database.getWordDao().addWord(Word(word = "ことば", translate = "word", caseWord = "言葉"))
         }
     }
 
@@ -37,10 +46,13 @@ class WordsAdapter : BaseAdapter<Word>() {
     override fun createDiffCallback(oldList: List<Word>, newList: List<Word>): DiffCallback<Word> =
         object : DiffCallback<Word>(oldList, newList) {
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                list[oldItemPosition].id == list[newItemPosition].id
+                oldList[oldItemPosition].id == newList[newItemPosition].id
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                list[oldItemPosition].word == list[newItemPosition].word
+                oldList[oldItemPosition].word == newList[newItemPosition].word
+                        || oldList[oldItemPosition].translate == newList[newItemPosition].translate
+                        || oldList[oldItemPosition].caseWord == newList[newItemPosition].caseWord
+
 
         }
 
@@ -56,11 +68,10 @@ class WordsAdapter : BaseAdapter<Word>() {
         )
 
     inner class WordViewHolder(private val binding: ItemWordBinding) :
-        BaseViewHolder<Word>(binding.root), KoinComponent {
+        BaseViewHolder<Word>(binding), KoinComponent {
         override fun bind(data: Word) {
             binding.viewModel = get { parametersOf(data) }
         }
-
     }
 
-}*/
+}

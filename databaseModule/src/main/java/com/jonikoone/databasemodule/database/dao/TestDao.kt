@@ -1,7 +1,7 @@
-package com.jonikoone.dictionaryforlearning.database.dao
+package com.jonikoone.databasemodule.database.dao
 /*
 import androidx.room.*
-import com.jonikoone.dictionaryforlearning.database.entites.Test
+import com.jonikoone.databasemodule.database.entites.Test
 
 @Dao
 interface TestDao {

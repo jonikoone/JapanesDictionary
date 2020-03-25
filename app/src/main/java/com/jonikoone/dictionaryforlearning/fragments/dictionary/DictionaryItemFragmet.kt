@@ -1,24 +1,21 @@
 package com.jonikoone.dictionaryforlearning.fragments.dictionary
 
 import android.graphics.Color
-import android.graphics.ColorSpace
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.annotation.ColorInt
-import androidx.core.graphics.component1
 import androidx.databinding.BindingAdapter
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jonikoone.dictionaryforlearning.R
-import com.jonikoone.dictionaryforlearning.database.entites.Dictionary
-import com.jonikoone.dictionaryforlearning.util.BaseFragment
+import com.jonikoone.databasemodule.database.entites.Dictionary
 
 
-class DictionaryItemFragmet : BaseFragment() {
+class DictionaryItemFragmet : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,7 +29,7 @@ class DictionaryItemFragmet : BaseFragment() {
     }
 }
 
-class DictionaryItemViewModel(private val dict: Dictionary) : ViewModel() {
+class DictionaryItemViewModel(private val dict: com.jonikoone.databasemodule.database.entites.Dictionary) : ViewModel() {
 
     val titleDict: LiveData<String> = MutableLiveData(dict.title)
     val labelTint: LiveData<Int> = MutableLiveData(Color.BLUE)

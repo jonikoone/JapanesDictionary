@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import com.jonikoone.dictionaryforlearning.R
-import com.jonikoone.dictionaryforlearning.database.entites.Dictionary
+import com.jonikoone.databasemodule.database.entites.Dictionary
 import com.jonikoone.dictionaryforlearning.databinding.FragmentDictionaresBinding
 import com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaresViewModel
 import com.jonikoone.dictionaryforlearning.util.BaseAdapter

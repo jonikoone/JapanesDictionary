@@ -1,56 +1,110 @@
 package com.jonikoone.dictionaryforlearning.viewmodels.labels
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.NumberPicker
 import androidx.databinding.BindingAdapter
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.*
 import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
-import com.jonikoone.dictionaryforlearning.database.entites.Label
+import com.jonikoone.databasemodule.database.AppDatabase
+import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.dictionaryforlearning.fragments.labels.LabelItemFragment
+import com.jonikoone.dictionaryforlearning.viewmodels.words.BackgroundSave
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.koin.core.qualifier.named
 import timber.log.Timber
 
-class LabelViewModel(var label: Label) : ViewModel(), KoinComponent {
+class LabelViewModel(private var label: Label) : ViewModel(), KoinComponent, BackgroundSave<Label> {
 
+    private val database: AppDatabase by inject()
 
+    override var job: Job? = null
+    override val delaySave: Long = 500
+    override val saveBlock: (Label) -> Unit = {
+        database.getLabelDao().updateLabel(it)
+    }
 
-    val labelTitle: MutableLiveData<String> = MutableLiveData(label.title)
+    var title: String = label.title
 
-    val labelDifficulty: MutableLiveData<Byte> = MutableLiveData(label.difficulty)
+    val labelTitle = MutableLiveData(label.title).apply {
+        observeForever {
+            label = label.copy(title = it)
+            backgroundSave(label)
+        }
+    }
 
-    val labelColor: MutableLiveData<Int> = MutableLiveData(label.color)
+    val labelDifficultyText by lazy { MutableLiveData("Difficulty is ${label.difficulty}") }
 
+    val labelDifficulty = MutableLiveData(label.difficulty).apply {
+        observeForever {
+            labelDifficultyText.value = "Difficulty is $it"
+            label = label.copy(difficulty = it)
+            backgroundSave(label)
+        }
+    }
 
-    /*@BindingAdapter("app:myClick")
-    fun clickBinding(v: View, i: Int) {
-        this.v = v
-    }*/
+    val labelColor = MutableLiveData(label.color)
+
+    private val args = Bundle().apply {
+        putSerializable(LabelItemFragment.LABEL_ARG, label)
+    }
 
     fun openLabelScreen() {
-        val args = Bundle().apply {
-            putSerializable(LabelItemFragment.LABEL_ARG, label)
-        }
+
         NavScreens.navController.navigate(R.id.labelItemFragment, args)
     }
 
     fun openColorPeackerDialog() {
-        NavScreens.navController.navigate(R.id.dialogColorPeacker)
+        NavScreens.navController.navigate(R.id.dialogColorPicker, args)
+
     }
 
     init {
         Timber.d("label view model: init label $this")
     }
+
+    /*@OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun autoSaveLabel() = viewModelScope.launch {
+        val newLabel = label.copy(
+            title = title,
+            difficulty = labelDifficulty.value!!,
+            color = labelColor.value!!
+        )
+        Timber.d("navigation back: label = $newLabel")
+        withContext(Dispatchers.IO) {
+            database.getLabelDao().updateLabel(newLabel)
+        }
+    }*/
+
+
+    val navigationBack = View.OnClickListener {
+        NavScreens.navController.popBackStack()
+    }
+
+    val listener = object : NumberPicker.OnValueChangeListener{
+        override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
+            labelDifficulty.value = picker?.value
+        }
+
+    }
+
+    companion object {
+
+        /*@JvmStatic
+        @BindingAdapter("app:onValueChange")
+        fun onValueChange(numberPicker: NumberPicker, listener: NumberPicker.OnValueChangeListener) {
+            numberPicker.setOnValueChangedListener(listener)
+        }*/
+    }
+
+}
+
+object ViewModelBindingAdapters {
 
 }
 

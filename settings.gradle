@@ -1,2 +1,3 @@
+include ':databaseModule'
 include ':app'
 rootProject.name = "Dictionary For Learning"

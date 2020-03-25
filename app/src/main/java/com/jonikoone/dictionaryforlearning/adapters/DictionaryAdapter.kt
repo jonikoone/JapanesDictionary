@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.databinding.FragmentItemWordBinding
-import com.jonikoone.dictionaryforlearning.database.entites.Word
+import com.jonikoone.databasemodule.database.entites.Word
 import com.jonikoone.dictionaryforlearning.viewmodels.ItemFragmentViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.get

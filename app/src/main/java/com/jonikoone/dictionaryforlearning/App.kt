@@ -3,9 +3,10 @@ package com.jonikoone.dictionaryforlearning
 //import com.jonikoone.dictionaryforlearning.di.navigationModule
 import android.app.Application
 import android.graphics.Color
-import com.jonikoone.dictionaryforlearning.database.entites.Label
+import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.dictionaryforlearning.di.databaseModule
 import com.jonikoone.dictionaryforlearning.di.viewModelModules
+import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
@@ -23,7 +24,7 @@ class App : Application() {
         Timber.d("result %d", Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
         startKoin {
             androidLogger(Level.DEBUG)
-
+            androidContext(this@App)
             modules(
                 listOf(
                     viewModelModules,
@@ -31,11 +32,31 @@ class App : Application() {
                     databaseModule,
                     module {
                         single(named("labels")) {
-                            listOf (
-                                Label(0, "label ", 0, Color.BLUE),
-                                Label(0, "label ", 0, Color.BLUE),
-                                Label(0, "label ", 0, Color.BLUE),
-                                Label(0, "label ", 0, Color.BLUE)
+                            listOf(
+                                Label(
+                                    0,
+                                    "label ",
+                                    0,
+                                    Color.BLUE
+                                ),
+                                Label(
+                                    0,
+                                    "label ",
+                                    0,
+                                    Color.BLUE
+                                ),
+                                Label(
+                                    0,
+                                    "label ",
+                                    0,
+                                    Color.BLUE
+                                ),
+                                Label(
+                                    0,
+                                    "label ",
+                                    0,
+                                    Color.BLUE
+                                )
                             )
                         }
                     }

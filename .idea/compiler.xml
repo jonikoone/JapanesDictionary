@@ -4,6 +4,7 @@
     <bytecodeTargetLevel>
       <module name="app" target="1.8" />
       <module name="Dictionary_For_Learning.app" target="1.8" />
+      <module name="Dictionary_For_Learning.databaseModule" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
