@@ -3,29 +3,24 @@ package com.jonikoone.dictionaryforlearning.viewmodels.labels
 import android.os.Bundle
 import android.view.View
 import android.widget.NumberPicker
-import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.databasemodule.database.AppDatabase
 import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.dictionaryforlearning.fragments.labels.LabelItemFragment
-import com.jonikoone.dictionaryforlearning.viewmodels.words.BackgroundSave
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.jonikoone.dictionaryforlearning.util.SuspendWork
+import com.jonikoone.dictionaryforlearning.util.SuspendWorkDefault
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
 
-class LabelViewModel(private var label: Label) : ViewModel(), KoinComponent, BackgroundSave<Label> {
+class LabelViewModel(private var label: Label) : ViewModel(), KoinComponent,
+    SuspendWork<Label> by SuspendWorkDefault() {
 
     private val database: AppDatabase by inject()
 
-    override var job: Job? = null
-    override val delaySave: Long = 500
-    override val saveBlock: (Label) -> Unit = {
+    override val work: (Label) -> Unit = {
         database.getLabelDao().updateLabel(it)
     }
 
@@ -34,7 +29,7 @@ class LabelViewModel(private var label: Label) : ViewModel(), KoinComponent, Bac
     val labelTitle = MutableLiveData(label.title).apply {
         observeForever {
             label = label.copy(title = it)
-            backgroundSave(label)
+            backgroundWork(label)
         }
     }
 
@@ -44,7 +39,7 @@ class LabelViewModel(private var label: Label) : ViewModel(), KoinComponent, Bac
         observeForever {
             labelDifficultyText.value = "Difficulty is $it"
             label = label.copy(difficulty = it)
-            backgroundSave(label)
+            backgroundWork(label)
         }
     }
 
