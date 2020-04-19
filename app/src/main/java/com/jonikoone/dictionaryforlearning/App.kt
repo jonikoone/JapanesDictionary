@@ -4,6 +4,7 @@ package com.jonikoone.dictionaryforlearning
 import android.app.Application
 import android.graphics.Color
 import com.jonikoone.databasemodule.database.entites.Label
+import com.jonikoone.dictionaryforlearning.di.appModule
 import com.jonikoone.dictionaryforlearning.di.databaseModule
 import com.jonikoone.dictionaryforlearning.di.viewModelModules
 import org.koin.android.ext.koin.androidContext
@@ -26,41 +27,12 @@ class App : Application() {
             androidLogger(Level.DEBUG)
             androidContext(this@App)
             modules(
-                listOf(
-                    viewModelModules,
-//                navigationModule,
+                appModule
+                /*listOf(
                     databaseModule,
-                    module {
-                        single(named("labels")) {
-                            listOf(
-                                Label(
-                                    0,
-                                    "label ",
-                                    0,
-                                    Color.BLUE
-                                ),
-                                Label(
-                                    0,
-                                    "label ",
-                                    0,
-                                    Color.BLUE
-                                ),
-                                Label(
-                                    0,
-                                    "label ",
-                                    0,
-                                    Color.BLUE
-                                ),
-                                Label(
-                                    0,
-                                    "label ",
-                                    0,
-                                    Color.BLUE
-                                )
-                            )
-                        }
-                    }
-                    /*module {
+                    viewModelModules
+//                navigationModule,
+                    *//*module {
                         single(named("list")) {
                             mutableListOf<Word>(
                                 Word(id = 0, word = "わたし1", caseWord = "私", translate = "Я"),
@@ -80,8 +52,8 @@ class App : Application() {
                                 Word(id = 0, word = "わたし5", caseWord = "私", translate = "Я")
                             )
                         }
-                    }*/
-                )
+                    }*//*
+                )*/
             )
         }
     }

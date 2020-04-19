@@ -1,105 +1,105 @@
 package com.jonikoone.dictionaryforlearning.viewmodels.labels
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.NumberPicker
+import androidx.annotation.ColorInt
+import androidx.databinding.Bindable
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.textfield.TextInputLayout
 import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
-import com.jonikoone.databasemodule.database.AppDatabase
+import com.jonikoone.databasemodule.database.dao.LabelDao
 import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.dictionaryforlearning.fragments.labels.LabelItemFragment
-import com.jonikoone.dictionaryforlearning.util.SuspendWork
-import com.jonikoone.dictionaryforlearning.util.SuspendWorkDefault
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import com.jonikoone.dictionaryforlearning.util.*
+import com.jonikoone.dictionaryforlearning.views.ColorPickerView
+import kotlinx.coroutines.Job
+import okhttp3.internal.toHexString
 import timber.log.Timber
 
-class LabelViewModel(private var label: Label) : ViewModel(), KoinComponent,
-    SuspendWork<Label> by SuspendWorkDefault() {
+class LabelViewModel(private val labelDao: LabelDao, private var label: Label) : ViewModel(),
+        SuspendWork<Label> {
 
-    private val database: AppDatabase by inject()
+    override var job: Job? = null
+    override val delaySuspend: Long = 200
 
     override val work: (Label) -> Unit = {
-        database.getLabelDao().updateLabel(it)
+        label = it
+        labelDao.update(it)
+        Timber.d("save label: $label, Color: ${label.color.toHexString()}")
     }
 
-    var title: String = label.title
+    private var color: Int = label.color
 
     val labelTitle = MutableLiveData(label.title).apply {
         observeForever {
-            label = label.copy(title = it)
-            backgroundWork(label)
+            backgroundWork(label.copy(title = it))
         }
     }
 
-    val labelDifficultyText by lazy { MutableLiveData("Difficulty is ${label.difficulty}") }
+    val stateBottomSheet = MutableLiveData(BottomSheetBehavior.STATE_HIDDEN)
+
+    val colorListener: (Int) -> Unit = {
+        backgroundWork(label.copy(color = it))
+    }
+
+    val colorListnerForStartIcon: (Int) -> Unit = {
+        labelColor.value = it
+    }
 
     val labelDifficulty = MutableLiveData(label.difficulty).apply {
         observeForever {
-            labelDifficultyText.value = "Difficulty is $it"
-            label = label.copy(difficulty = it)
-            backgroundWork(label)
+            backgroundWork(label.copy(difficulty = it))
         }
     }
 
-    val labelColor = MutableLiveData(label.color)
-
-    private val args = Bundle().apply {
-        putSerializable(LabelItemFragment.LABEL_ARG, label)
-    }
-
-    fun openLabelScreen() {
-
-        NavScreens.navController.navigate(R.id.labelItemFragment, args)
-    }
-
-    fun openColorPeackerDialog() {
-        NavScreens.navController.navigate(R.id.dialogColorPicker, args)
-
-    }
-
-    init {
-        Timber.d("label view model: init label $this")
-    }
-
-    /*@OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun autoSaveLabel() = viewModelScope.launch {
-        val newLabel = label.copy(
-            title = title,
-            difficulty = labelDifficulty.value!!,
-            color = labelColor.value!!
-        )
-        Timber.d("navigation back: label = $newLabel")
-        withContext(Dispatchers.IO) {
-            database.getLabelDao().updateLabel(newLabel)
+    val labelColor = MutableLiveData(color).apply {
+        observeForever {
+            color = it
         }
-    }*/
-
+    }
 
     val navigationBack = View.OnClickListener {
         NavScreens.navController.popBackStack()
     }
 
-    val listener = object : NumberPicker.OnValueChangeListener{
-        override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
-            labelDifficulty.value = picker?.value
+    val onClickStartIcon = View.OnClickListener {
+        stateBottomSheet.value = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+
+        override fun onStateChanged(bottomSheet: View, newState: Int) {
+            Timber.d("bs state: $newState")
+            if (BottomSheetBehavior.STATE_DRAGGING == newState)
+                cancelChangeColor()
         }
 
     }
 
-    companion object {
-
-        /*@JvmStatic
-        @BindingAdapter("app:onValueChange")
-        fun onValueChange(numberPicker: NumberPicker, listener: NumberPicker.OnValueChangeListener) {
-            numberPicker.setOnValueChangedListener(listener)
-        }*/
+    private fun createArgs() = Bundle().apply {
+        putSerializable(LabelItemFragment.LABEL, label)
     }
 
-}
+    fun openLabelScreen() {
+        NavScreens.navController.navigate(R.id.labelEditFragment, createArgs())
+    }
 
-object ViewModelBindingAdapters {
+    fun cancelChangeColor() {
+        stateBottomSheet.value = BottomSheetBehavior.STATE_HIDDEN
+        labelColor.value = label.color
+    }
 
+    fun applyChangeColor() {
+        stateBottomSheet.value = BottomSheetBehavior.STATE_HIDDEN
+        backgroundWork(label.copy(color = color))
+    }
 }
 

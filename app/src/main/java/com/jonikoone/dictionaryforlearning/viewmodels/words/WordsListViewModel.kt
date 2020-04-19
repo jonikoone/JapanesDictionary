@@ -36,7 +36,7 @@ open class WordsListViewModel(val dictionaryId: Long? = null) : ViewModel(), Koi
     fun addWord() {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("add Word")
-            database.getWordDao().addWord(Word(word = "ことば", translate = "word", caseWord = "言葉"))
+            database.getWordDao().insert(Word(word = "ことば", translate = "word", caseWord = "言葉"))
         }
     }
 

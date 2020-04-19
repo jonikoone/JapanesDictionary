@@ -11,18 +11,17 @@ import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.dictionaryforlearning.databinding.FragmentLabelBinding
 import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
-import org.koin.core.KoinComponent
 import org.koin.core.parameter.parametersOf
 
-class LabelItemFragment : Fragment(), KoinComponent {
+class LabelItemFragment : Fragment() {
 
     companion object {
-        const val LABEL_ARG = "jonikoone.label_item_fragment.label"
+        const val LABEL = "jonikoone.label_fragment.label"
     }
 
-    private val labelId: Label by lazy { arguments?.get(LABEL_ARG) as Label }
+    private val label: Label by lazy { arguments?.get(LABEL) as Label }
 
-    private val labelViewModel: LabelViewModel by viewModel { parametersOf(labelId) }
+    private val labelViewModel: LabelViewModel by viewModel { parametersOf(label) }
 
     override fun onCreateView(
         inflater: LayoutInflater,

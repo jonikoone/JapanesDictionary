@@ -8,6 +8,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jonikoone.databasemodule.database.AppDatabase
+import com.jonikoone.databasemodule.database.dao.LabelDao
 import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.databinding.ItemLabelBinding
@@ -22,37 +23,23 @@ import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
-class LabelListViewModel : ViewModel(), KoinComponent {
+class LabelListViewModel(private val labelDao: LabelDao) : ViewModel() {
 
-    private val database: AppDatabase by inject()
 
     val adapter = LabelListAdapter()
 
 
     init {
-        database.getLabelDao().getLabels().observeForever{
+        labelDao.getLabels().observeForever{
             adapter.updateList(it)
         }
     }
 
 
     fun addLabel() {
-        adapter.addItems(
-            Label(
-                0L,
-                "New label",
-                128,
-                Color.GREEN
-            )
-        )
         viewModelScope.launch(Dispatchers.IO) {
-            database.getLabelDao().addLable(
-                Label(
-                    0L,
-                    "New label",
-                    128,
-                    Color.YELLOW
-                )
+            labelDao.insert(
+                Label()
             )
         }
     }

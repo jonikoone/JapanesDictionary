@@ -19,7 +19,7 @@ class WordViewModel(private var word: Word) : ViewModel(), KoinComponent, Lifecy
     val database: AppDatabase by inject()
 
     override val work: (word: Word) -> Unit = {
-        database.getWordDao().updateWord(it)
+        database.getWordDao().update(it)
     }
 
     val wordData = MutableLiveData(word.word).apply {

@@ -11,7 +11,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 import timber.log.Timber
 
-class LabelListFragment : Fragment(), KoinComponent {
+class LabelListFragment : Fragment() {
 
     private val labelsViewModel: LabelListViewModel by viewModel()
 
@@ -31,7 +31,7 @@ class LabelListFragment : Fragment(), KoinComponent {
         return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    /*override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         Timber.d("labelfragment: create menu")
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.labels_menu, menu)
@@ -47,7 +47,7 @@ class LabelListFragment : Fragment(), KoinComponent {
             Timber.d("labelfragment: else")
             super.onOptionsItemSelected(item)
         }
-    }
+    }*/
 
 
 }

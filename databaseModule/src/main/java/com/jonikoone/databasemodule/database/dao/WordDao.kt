@@ -8,7 +8,7 @@ import androidx.room.Update
 import com.jonikoone.databasemodule.database.entites.Word
 
 @Dao
-interface WordDao {
+interface WordDao : BaseDao<Word> {
 
     @Query("Select * From words")
     fun getWords(): LiveData<List<Word>>
@@ -25,13 +25,6 @@ interface WordDao {
     @Query("Select * From words where word_case = :caseWord")
     fun getWordByCase(caseWord: String): Word
 
-
-    @Insert
-    fun addWord(word: Word = Word())
-
-
-    @Update
-    fun updateWord(word: Word)
 
     /*@Query("select * from words where wor")
     fun getWordsFromDictionary(dictionaryId: Long)*/

@@ -5,18 +5,12 @@ import androidx.room.*
 import com.jonikoone.databasemodule.database.entites.Label
 
 @Dao
-interface LabelDao {
+interface LabelDao : BaseDao<Label>{
 
-    @Query("select * from labels")
+    @Query(value = "select * from labels")
     fun getLabels() : LiveData<List<Label>>
 
-    @Update
-    fun updateLabel(label: Label)
-
-    @Insert
-    fun addLable(label: Label)
-
-    @Delete
-    fun deleteLabel(label: Label)
+    @Query(value = "select * from labels where id_label = :idLabel")
+    fun getLabel(idLabel: Long) : LiveData<Label>
 
 }
