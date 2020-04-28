@@ -62,7 +62,7 @@
             app:layout_anchor="@id/nestedScrollView"
             app:layout_anchorGravity="bottom|end|right"
             app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
-            app:srcCompat="@drawable/ic_add_24" />
+            app:srcCompat="@drawable/ic_add" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

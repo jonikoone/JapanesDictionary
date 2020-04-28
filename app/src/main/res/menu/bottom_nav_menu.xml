@@ -8,13 +8,6 @@
         />
 
 
-
-    <item
-        android:id="@+id/wordsListFragment"
-        android:title="Words"
-        android:icon="@drawable/ic_words"
-        />
-
     <item
         android:id="@+id/testsFragment"
         android:title="Test"

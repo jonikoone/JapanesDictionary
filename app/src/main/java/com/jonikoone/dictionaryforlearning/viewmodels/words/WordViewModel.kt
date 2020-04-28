@@ -6,20 +6,27 @@ import androidx.lifecycle.*
 import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.databasemodule.database.AppDatabase
+import com.jonikoone.databasemodule.database.dao.WordDao
 import com.jonikoone.databasemodule.database.entites.Word
 import com.jonikoone.dictionaryforlearning.fragments.words.WordItemFragment.Companion.WORD_ARG
 import com.jonikoone.dictionaryforlearning.util.SuspendWork
-import com.jonikoone.dictionaryforlearning.util.SuspendWorkDefault
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import timber.log.Timber
 
-class WordViewModel(private var word: Word) : ViewModel(), KoinComponent, LifecycleObserver,
-    SuspendWork<Word> by SuspendWorkDefault() {
+class WordViewModel(private val wordDao: WordDao, private var word: Word) : ViewModel(),
+        KoinComponent, LifecycleObserver,
+        SuspendWork<Word> {
 
-    val database: AppDatabase by inject()
+    override var job: Job? = null
+    override val delaySuspend: Long = 300
 
     override val work: (word: Word) -> Unit = {
-        database.getWordDao().update(it)
+        wordDao.update(word)
     }
 
     val wordData = MutableLiveData(word.word).apply {
@@ -42,13 +49,33 @@ class WordViewModel(private var word: Word) : ViewModel(), KoinComponent, Lifecy
     }
 
     fun openWord() {
-        val bundle = Bundle().apply {
-            putSerializable(WORD_ARG, word)
-        }
-        NavScreens.navController.navigate(R.id.wordFragment, bundle)
+        Companion.openWord(word)
     }
 
+    fun isEmptyWord(): Boolean =
+            wordData.value?.isEmpty() ?: true
+                    && translate.value?.isEmpty() ?: true
+                    && case.value?.isEmpty() ?: true
 
-    val backAction = View.OnClickListener { NavScreens.navController.popBackStack() }
+    val backAction = View.OnClickListener {
+        viewModelScope.launch {
+            if (isEmptyWord()) {
+                withContext(Dispatchers.IO) {
+                    wordDao.delete(word)
+                }
+            }
+            NavScreens.navController.popBackStack()
+        }
+
+    }
+
+    companion object {
+        fun openWord(word: Word) {
+            val bundle = Bundle().apply {
+                putSerializable(WORD_ARG, word)
+            }
+            NavScreens.navController.navigate(R.id.wordFragment, bundle)
+        }
+    }
 }
 

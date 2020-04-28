@@ -1,5 +1,6 @@
 package com.jonikoone.dictionaryforlearning.viewmodels.dictionary
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +12,12 @@ import androidx.viewbinding.ViewBinding
 import com.jonikoone.databasemodule.database.AppDatabase
 import com.jonikoone.databasemodule.database.dao.DictionaryDao
 import com.jonikoone.databasemodule.database.entites.Dictionary
+import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.databinding.ItemDictionaryBinding
 import com.jonikoone.dictionaryforlearning.util.BaseAdapter
 import com.jonikoone.dictionaryforlearning.util.DiffCallback
 import com.jonikoone.dictionaryforlearning.util.SuspendWork
-import com.jonikoone.dictionaryforlearning.util.SuspendWorkDefault
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.inject
@@ -24,13 +25,22 @@ import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 
-class DictionaryListViewModel(dictionaryDao: DictionaryDao) : ViewModel() {
+class DictionaryListViewModel(val dictionaryDao: DictionaryDao) : ViewModel() {
     //получаем список словарей
     val titleDictionary = "void"
     val adapter = DictionaryListAdapter()
 
+    init {
+        dictionaryDao.getDictionaries().observeForever {
+            adapter.updateList(it)
+        }
+    }
+
     fun addDictionary() {
-        Timber.d("Hello")
+        dictionaryDao.insert(Dictionary())
+        NavScreens.navController.navigate(R.id.dictionaryFragment, Bundle().apply {
+
+        })
     }
 
 }

@@ -26,7 +26,8 @@ class DictionaryListFragment : Fragment() {
     ): View? {
         val binding = DataBindingUtil.inflate<FragmentDictionaryListBinding>(inflater, R.layout.fragment_dictionary_list, container, false)
 
-        //binding.viewModel = viewModelDictionares
+        binding.viewModel = viewModelDictionares
+        binding.lifecycleOwner = this
 
         return binding.root
     }

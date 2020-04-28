@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-selector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:exitFadeDuration="@android:integer/config_shortAnimTime"
+    android:enterFadeDuration="@android:integer/config_shortAnimTime"
+    >
+
+    <item
+        android:state_activated="true">
+
+        <animation-list android:oneshot="false">
+
+            <item android:duration="@integer/slow_animation"
+                android:drawable="@drawable/ic_check_circle">
+                <color android:color="@color/colorPrimary"/>
+            </item>
+
+
+
+        </animation-list>
+
+    </item>
+
+    <item>
+        <animation-list android:oneshot="false">
+
+            <item android:duration="@integer/slow_animation"
+                android:drawable="@drawable/ic_label"/>
+
+        </animation-list>
+
+    </item>
+
+</animated-selector>

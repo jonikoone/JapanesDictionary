@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.jonikoone.dictionaryforlearning.viewmodels.words.WordsListViewModel" />
@@ -21,21 +22,21 @@
             android:elevation="8dp">
 
             <com.google.android.material.appbar.MaterialToolbar
-                app:layout_scrollFlags="snap|scroll|enterAlways"
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:fadingEdgeLength="10dp"
+                app:layout_scrollFlags="snap|scroll|enterAlways"
                 app:title="@{viewModel.titleDictionary}"
-                tools:title="All words"/>
+                tools:title="All words" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nestedScrollView"
-            android:fillViewport="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -43,23 +44,92 @@
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
                 app:adapter="@{viewModel.adapter}"
-
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+                app:setSelectionTracker="@{viewModel.createSelectionTracker}"
                 tools:listitem="@layout/item_word" />
 
         </androidx.core.widget.NestedScrollView>
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            app:layout_anchor="@id/floatingActionButton"
+            app:layout_anchorGravity="center|center_horizontal"
+            app:layout_behavior="com.google.android.material.transformation.FabTransformationScrimBehavior">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:fabSize="mini"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/ic_words"
+                android:backgroundTint="#29B6F6"
+                />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:fabSize="mini"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/ic_delete_words"
+                android:backgroundTint="#F44336"
+                android:onClick="@{() -> viewModel.deleteSelectedWords()}"
+                />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:fabSize="mini"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/ic_dictionary"
+                android:backgroundTint="#9CCC65"
+                />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:fabSize="mini"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="56dp"
+                android:src="@drawable/ic_label"
+                android:backgroundTint="#FFCA28"
+                />
+
+        </LinearLayout>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+
             android:id="@+id/floatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="@{() -> viewModel.addWord()}"
+            app:setStateRotationAnimation="@{viewModel.isFabRotate}"
+            app:setClick="@{viewModel.addWord}"
             app:layout_anchor="@id/nestedScrollView"
             app:layout_anchorGravity="bottom|end"
-            app:srcCompat="@drawable/ic_add_24" />
+            app:srcCompat="@drawable/ic_add" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

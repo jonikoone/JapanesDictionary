@@ -1,43 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaryItemViewModel" />
-        <import type="androidx.core.content.ContextCompat"/>
+            type="com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryItemViewModel" />
+
+        <import type="androidx.core.content.ContextCompat" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:clickable="true"
-        android:onClick="@{() -> viewModel.openDict()}"
-        tools:context=".fragments.dictionary.DictionaryItemFragmet"
-        android:focusable="true">
+        android:focusable="true"
+        android:onClick="@{() -> viewModel.openDictionary()}"
+        android:orientation="horizontal"
+        tools:context=".fragments.dictionary.DictionaryItemFragmet">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_label"
-            android:tint="@{viewModel.labelTint}"
-            android:padding="16dp"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
             android:layout_marginRight="16dp"
-            />
+            android:src="@drawable/ic_label"
+            android:tint="@{viewModel.labelColor}"
+            android:visibility="@{viewModel.labelVisible}" />
 
-        <!-- TODO: Update blank fragment layout -->
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="start|center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            android:text="@{viewModel.titleDict}"
-            android:maxLines="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
             android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{viewModel.titleDictionary}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             tools:text="Japan Dict 1 kyu" />
 
     </LinearLayout>

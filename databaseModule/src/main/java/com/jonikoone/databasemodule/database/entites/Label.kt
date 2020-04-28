@@ -4,9 +4,11 @@ import android.graphics.Color
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.jonikoone.databasemodule.database.OpenForTesting
 import java.io.Serializable
 
 @Entity(tableName = "labels")
+@OpenForTesting
 data class Label(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id_label")

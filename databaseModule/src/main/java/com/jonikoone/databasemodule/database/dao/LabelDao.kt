@@ -14,3 +14,4 @@ interface LabelDao : BaseDao<Label>{
     fun getLabel(idLabel: Long) : LiveData<Label>
 
 }
+

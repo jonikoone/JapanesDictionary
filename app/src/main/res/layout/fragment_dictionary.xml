@@ -56,10 +56,10 @@
             android:layout_margin="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="@{() -> viewModel.addWord()}"
+
             app:layout_anchor="@id/nestedScrollView"
             app:layout_anchorGravity="bottom|end"
-            app:srcCompat="@drawable/ic_add_24" />
+            app:srcCompat="@drawable/ic_add" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

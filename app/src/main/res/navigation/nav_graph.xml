@@ -22,6 +22,22 @@
         android:label="LabelItemFragment"/>
 
 
+
+    <fragment
+        android:id="@+id/dictionariesFragment"
+        android:name="com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaryListFragment"
+        android:label="DictionariesFragment">
+        <action
+            android:id="@+id/action_dictionariesList_to_dictionaryFragment"
+            app:destination="@id/dictionariesFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/dictionaryFragment"
+        android:name="com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaryFragment">
+        <action
+            android:id="@+id/action_dictionaryItemFragment_to_wordsListFragment"
+            app:destination="@id/wordsListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/wordsListFragment"
         android:name="com.jonikoone.dictionaryforlearning.fragments.words.WordsListFragment"
@@ -34,24 +50,6 @@
         android:id="@+id/wordFragment"
         android:name="com.jonikoone.dictionaryforlearning.fragments.words.WordItemFragment"
         android:label="WordFragment" />
-
-    <!--<fragment
-        android:id="@+id/dictionariesFragment"
-        android:name="com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaresFragment"
-        android:label="DictionariesFragment">
-        <action
-            android:id="@+id/action_dictionariesList_to_dictionaryItem" />
-    </fragment>
-    <fragment
-        android:id="@+id/dictionaryItemFragment"
-        android:name="com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaryItemFragment">
-        <action
-            android:id="@+id/action_dictionaryItemFragment_to_wordsListFragment"
-            app:destination="@id/wordsListFragment"
-            />
-
-    </fragment>-->
-
 
 
 </navigation>

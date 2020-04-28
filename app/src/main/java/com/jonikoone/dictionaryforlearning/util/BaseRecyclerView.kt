@@ -41,7 +41,8 @@ abstract class BaseAdapter<T> :
         constructor(itemView: View) : super(itemView)
         constructor(binding: ViewDataBinding) : super(binding.root)
 
-        abstract fun bind(data: T)
+        open fun bind(data: T){}
+        open fun bind(data: T, isActivate: Boolean = false){}
     }
 
     abstract fun createDiffCallback(oldList: List<T>, newList: List<T>): DiffCallback<T>

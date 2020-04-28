@@ -10,6 +10,7 @@ import com.jonikoone.databasemodule.database.entites.*
 @Database(
     entities = [
         Word::class,
+        WordStatistic::class,
         Label::class,
         Dictionary::class
     ],
@@ -18,6 +19,7 @@ import com.jonikoone.databasemodule.database.entites.*
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun getWordDao(): WordDao
+
 //    abstract fun getTestDao(): TestDao
     abstract fun getLabelDao(): LabelDao
 

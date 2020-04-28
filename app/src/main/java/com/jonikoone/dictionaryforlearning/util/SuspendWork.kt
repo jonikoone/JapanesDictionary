@@ -23,11 +23,12 @@ interface SuspendWork<T> : CoroutineScope {
     }
 }
 
+/*
 class SuspendWorkDefault<T>(override val delaySuspend: Long = 300) : SuspendWork<T> {
     override var job: Job? = null
     override lateinit var work: (T) -> Unit
-/*override val work: (T) -> Unit = {
+*//*override val work: (T) -> Unit = {
         Timber.d("Default implementation is not override!")
-    }*/
+    }*//*
 
-}
+}*/
