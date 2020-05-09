@@ -35,19 +35,7 @@ android {
         dataBinding = true
     }
 
-    /*sourceSets {
-        main {
-            res.srcDirs =
-                    [
-                            'src/main/res/layouts/common',
-                            'src/main/res/layouts/dictionary',
-                            'src/main/res/layouts/labels',
-                            'src/main/res/layouts/other',
-                            'src/main/res/layouts/words',
-                            'src/main/res'
-                    ]
-        }
-    }*/
+
     configurations.all() {
         resolutionStrategy.force "org.antlr:antlr4-runtime:4.5.3"
         resolutionStrategy.force "org.antlr:antlr4-tool:4.5.3"

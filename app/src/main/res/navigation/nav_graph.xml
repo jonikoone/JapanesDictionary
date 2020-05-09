@@ -28,9 +28,18 @@
         android:name="com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaryListFragment"
         android:label="DictionariesFragment">
         <action
-            android:id="@+id/action_dictionariesList_to_dictionaryFragment"
-            app:destination="@id/dictionariesFragment"/>
+            android:id="@+id/action_dictionariesList_to_dictionaryEditFragment"
+            app:destination="@id/dictionaryEditFragment"/>
+        <action
+            android:id="@+id/action_dictionariesList_to_wordsListFragment"
+            app:destination="@id/wordsListFragment"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/dictionaryEditFragment"
+        android:name="com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaryEditFragment"
+        android:label="DictionaryEditFragment" />
+
     <fragment
         android:id="@+id/dictionaryFragment"
         android:name="com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaryFragment">
@@ -50,6 +59,7 @@
         android:id="@+id/wordFragment"
         android:name="com.jonikoone.dictionaryforlearning.fragments.words.WordItemFragment"
         android:label="WordFragment" />
+
 
 
 </navigation>

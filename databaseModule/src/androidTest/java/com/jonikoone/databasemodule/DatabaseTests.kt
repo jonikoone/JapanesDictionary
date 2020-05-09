@@ -65,7 +65,7 @@ class DatabaseTests {
 
     @Test
     @Throws(Exception::class)
-    fun writeDictionary() {
+    fun writeDictionaryWithLabel() {
         val newLabel = mock(Label::class.java)
         `when`(newLabel.title).thenReturn("label for dict")
         val idLabel = labelDao.insert(newLabel)
@@ -84,8 +84,27 @@ class DatabaseTests {
         dictionaryDao.getDictionaryWithLabelItem(idDict).test()
                 .awaitValue()
                 .assertHasValue()
-                .assertValue { it.label.title == newLabel.title }
+                .assertValue { it.label?.title == newLabel.title }
                 .assertValue { it.dictionary.title == newDict.title }
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun writeDictionary() {
+        val newDict = mock(Dictionary::class.java)
+        `when`(newDict.title).thenReturn("test dict")
+
+        val idDict = dictionaryDao.insert(newDict)
+
+        dictionaryDao.getDictionariesWithLabel().test()
+                .awaitValue()
+                .assertHasValue()
+                .assertValue { it.count() == 1 }
+
+        dictionaryDao.getDictionaryWithLabelItem(idDict).test()
+                .awaitValue()
+                .assertHasValue()
+                .assertValue { it.label == null }
     }
 
     @Test

@@ -2,16 +2,13 @@ package com.jonikoone.dictionaryforlearning.util
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.StateListAnimator
+import android.content.Context
 import android.content.res.ColorStateList
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.textfield.TextInputLayout
-import okhttp3.internal.checkDuration
 import timber.log.Timber
 
 object BindingUtil {
@@ -84,6 +81,12 @@ object BindingUtil {
             rotation(if (rotation) 135f else 0f)
 
         }
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:setItemDecoration")
+    fun setItemDecoration(recyclerView: RecyclerView, decorartionFactory: (RecyclerView) -> RecyclerView.ItemDecoration) {
+        recyclerView.addItemDecoration(decorartionFactory(recyclerView))
     }
 
 }

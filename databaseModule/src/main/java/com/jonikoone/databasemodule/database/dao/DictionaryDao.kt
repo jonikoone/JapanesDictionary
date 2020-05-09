@@ -39,4 +39,5 @@ interface DictionaryDao : BaseDao<Dictionary> {
 
 
 
+
 }

@@ -7,7 +7,7 @@ import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.databasemodule.database.entites.Word
 import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryItemViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryListViewModel
-import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryViewModel
+import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryEditViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelItemViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelListViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelViewModel
@@ -38,6 +38,6 @@ val appModule = module {
 
     viewModel { DictionaryListViewModel(get()) }
     viewModel { (dictionary: Dictionary) -> DictionaryItemViewModel(get(), dictionary) }
-    viewModel { (dictionary: Dictionary) -> DictionaryViewModel(get(), dictionary) }
+    viewModel { (dictionary: Dictionary) -> DictionaryEditViewModel(get(), dictionary) }
 
 }

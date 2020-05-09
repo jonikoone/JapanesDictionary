@@ -31,5 +31,5 @@ data class DictionaryWithLabel(
         parentColumn = "id_dictionary",
         entityColumn = "id_label"
     )
-    val label: Label
+    val label: Label?
 )

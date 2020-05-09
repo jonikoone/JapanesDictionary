@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="androidx.recyclerview.widget.DividerItemDecoration"/>
         <variable
             name="viewModel"
             type="com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryListViewModel" />
@@ -26,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:fadingEdgeLength="10dp"
-                app:title="@{viewModel.titleDictionary}"
+                app:title="Dictionaries"
                 tools:title="Dictionaries"/>
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -43,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
                 app:adapter="@{viewModel.adapter}"
-
+                app:setItemDecoration="@{viewModel.decoration}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_dictionary" />
 

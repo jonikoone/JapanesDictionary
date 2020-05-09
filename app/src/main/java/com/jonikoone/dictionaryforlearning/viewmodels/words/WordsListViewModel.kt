@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
@@ -16,8 +17,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jonikoone.databasemodule.database.AppDatabase
 import com.jonikoone.databasemodule.database.dao.WordDao
 import com.jonikoone.databasemodule.database.entites.Word
+import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.databinding.ItemWordBinding
+import com.jonikoone.dictionaryforlearning.fragments.words.WordItemFragment.Companion.WORD_ARG
+import com.jonikoone.dictionaryforlearning.generated.callback.OnClickListener
 import com.jonikoone.dictionaryforlearning.util.BaseAdapter
 import com.jonikoone.dictionaryforlearning.util.DiffCallback
 import kotlinx.coroutines.Dispatchers
@@ -29,8 +33,8 @@ import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
-open class WordsListViewModel(private val wordDao: WordDao, val dictionaryId: Long? = null) :
-    ViewModel(), KoinComponent {
+open class WordsListViewModel(private val database: AppDatabase, val dictionaryId: Long? = null) :
+        ViewModel(), KoinComponent {
 
     val isFabRotate = MutableLiveData(false)
 
@@ -38,31 +42,34 @@ open class WordsListViewModel(private val wordDao: WordDao, val dictionaryId: Lo
     val adapter = WordsAdapter()
 
     val createSelectionTracker: (RecyclerView) -> Unit = {
-        val tracker  = SelectionTracker.Builder<Long>(
-            "my selection", it,
-            StableIdKeyProvider(it),
-            WordItemDetailLookup(it),
-            StorageStrategy.createLongStorage()
+        val tracker = SelectionTracker.Builder<Long>(
+                "my selection", it,
+                StableIdKeyProvider(it),
+                WordItemDetailLookup(it),
+                StorageStrategy.createLongStorage()
         ).withSelectionPredicate(
-            SelectionPredicates.createSelectAnything()
+                SelectionPredicates.createSelectAnything()
         ).build()
 
         tracker?.addObserver(
-            object : SelectionTracker.SelectionObserver<Long>() {
-                override fun onSelectionChanged() {
-                    super.onSelectionChanged()
+                object : SelectionTracker.SelectionObserver<Long>() {
+                    override fun onSelectionChanged() {
+                        super.onSelectionChanged()
 
-                    /*if (tracker.selection.isEmpty) {
-                        Toast.makeText(it.context, "selection is empty", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(it.context, "selection is not empty", Toast.LENGTH_SHORT).show()
-                    }*/
-                }
-            })
+                        /*if (tracker.selection.isEmpty) {
+                            Toast.makeText(it.context, "selection is empty", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(it.context, "selection is not empty", Toast.LENGTH_SHORT).show()
+                        }*/
+                    }
+                })
 
         adapter.tracker = tracker
     }
 
+    val backAction = View.OnClickListener {
+        NavScreens.navController.popBackStack()
+    }
 
     val showFABs = View.OnLongClickListener {
         it as FloatingActionButton
@@ -72,32 +79,39 @@ open class WordsListViewModel(private val wordDao: WordDao, val dictionaryId: Lo
 
     val addWord = View.OnClickListener {
 
-        it as FloatingActionButton
+        /*it as FloatingActionButton
         it.isExpanded = !it.isExpanded
         it.isActivated = !it.isActivated
 
-        isFabRotate.value = it.isExpanded
+        isFabRotate.value = it.isExpanded*/
 
-        /*it as FloatingActionButton
+        it as FloatingActionButton
         if (it.isExpanded) {
 
         } else {
             viewModelScope.launch {
                 var newWord: Word? = null
                 withContext(Dispatchers.IO) {
-                    var newWordId = wordDao.insert(Word())
-                    newWord = wordDao.getWord(newWordId)
+                    var newWordId = database.getWordDao().insert(Word())
+                    newWord = database.getWordDao().getWord(newWordId)
                 }
                 newWord?.let { word ->
-                    WordViewModel.openWord(word)
+                    NavScreens.navController.navigate(R.id.wordFragment, bundleOf(WORD_ARG to word))
                 }
             }
-        }*/
+        }
     }
 
     init {
-        wordDao.getWords().observeForever {
-            adapter.updateList(it)
+        if (dictionaryId != null) {
+            database.getDictionaryDao().getDictionaryWithWords(dictionaryId).observeForever {
+                titleDictionary.value = it.dictionary.title
+                adapter.updateList(it.words)
+            }
+        } else {
+            database.getWordDao().getWords().observeForever {
+                adapter.updateList(it)
+            }
         }
     }
 
@@ -119,34 +133,34 @@ open class WordsListViewModel(private val wordDao: WordDao, val dictionaryId: Lo
         override fun getItemId(position: Int): Long = position.toLong()
 
         override fun createDiffCallback(
-            oldList: List<Word>,
-            newList: List<Word>
+                oldList: List<Word>,
+                newList: List<Word>
         ): DiffCallback<Word> =
-            object : DiffCallback<Word>(oldList, newList) {
-                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                    oldList[oldItemPosition].id == newList[newItemPosition].id
+                object : DiffCallback<Word>(oldList, newList) {
+                    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                            oldList[oldItemPosition].id == newList[newItemPosition].id
 
-                override fun areContentsTheSame(
-                    oldItemPosition: Int,
-                    newItemPosition: Int
-                ): Boolean =
-                    oldList[oldItemPosition].word == newList[newItemPosition].word
-                            || oldList[oldItemPosition].translate == newList[newItemPosition].translate
-                            || oldList[oldItemPosition].caseWord == newList[newItemPosition].caseWord
+                    override fun areContentsTheSame(
+                            oldItemPosition: Int,
+                            newItemPosition: Int
+                    ): Boolean =
+                            oldList[oldItemPosition].word == newList[newItemPosition].word
+                                    || oldList[oldItemPosition].translate == newList[newItemPosition].translate
+                                    || oldList[oldItemPosition].caseWord == newList[newItemPosition].caseWord
 
 
-            }
+                }
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<Word> =
-            WordViewHolder(
-                DataBindingUtil.inflate(
-                    LayoutInflater.from(parent.context),
-                    R.layout.item_word,
-                    parent,
-                    false
+                WordViewHolder(
+                        DataBindingUtil.inflate(
+                                LayoutInflater.from(parent.context),
+                                R.layout.item_word,
+                                parent,
+                                false
+                        )
                 )
-            )
 
         override fun onBindViewHolder(holder: BaseViewHolder<Word>, position: Int) {
             val word = list[position]
@@ -157,7 +171,7 @@ open class WordsListViewModel(private val wordDao: WordDao, val dictionaryId: Lo
         }
 
         inner class WordViewHolder(private val binding: ItemWordBinding) :
-            BaseViewHolder<Word>(binding), KoinComponent {
+                BaseViewHolder<Word>(binding), KoinComponent {
 
             override fun bind(data: Word, isActivate: Boolean) {
                 binding.viewModel = get { parametersOf(data) }

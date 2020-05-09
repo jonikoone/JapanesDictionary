@@ -12,10 +12,20 @@ import com.jonikoone.dictionaryforlearning.databinding.FragmentWordsListBinding
 import com.jonikoone.dictionaryforlearning.viewmodels.words.WordsListViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.properties.Delegates
 
 class WordsListFragment : Fragment() {
 
-    private val viewModel: WordsListViewModel by viewModel { parametersOf(null) }
+    var dictionaryId by Delegates.notNull<Long>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        arguments?.let {
+            dictionaryId = it.getLong(DICTIONARY_KEY)
+        }
+        super.onCreate(savedInstanceState)
+    }
+
+    private val viewModel: WordsListViewModel by viewModel { parametersOf(dictionaryId) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,5 +42,8 @@ class WordsListFragment : Fragment() {
         return binding.root
     }
 
+    companion object {
+        const val DICTIONARY_KEY = "com.jonikoone.dictionary.id"
+    }
 
 }

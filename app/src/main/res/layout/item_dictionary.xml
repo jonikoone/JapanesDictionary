@@ -17,11 +17,12 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
+        android:background="?attr/selectableItemBackground"
         android:onClick="@{() -> viewModel.openDictionary()}"
         android:orientation="horizontal"
         tools:context=".fragments.dictionary.DictionaryItemFragmet">
 
-        <ImageView
+        <!--<ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -29,7 +30,7 @@
             android:layout_marginRight="16dp"
             android:src="@drawable/ic_label"
             android:tint="@{viewModel.labelColor}"
-            android:visibility="@{viewModel.labelVisible}" />
+            android:visibility="@{viewModel.labelVisible}" />-->
 
         <TextView
             android:layout_width="match_parent"

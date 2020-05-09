@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jonikoone.databasemodule.database.dao.WordDao
 import com.jonikoone.databasemodule.database.entites.Word
+import com.jonikoone.dictionaryforlearning.NavScreens
+import com.jonikoone.dictionaryforlearning.R
 import timber.log.Timber
 
 class WordItemViewModel(private val wordDao: WordDao, private var word: Word) : ViewModel() {
@@ -37,7 +39,7 @@ class WordItemViewModel(private val wordDao: WordDao, private var word: Word) : 
     }
 
     fun openWord() {
-        WordViewModel.openWord(word)
+        NavScreens.navController.navigate(R.id.action_wordsListFragment_to_wordFragment)
     }
 
     fun checkItem() {

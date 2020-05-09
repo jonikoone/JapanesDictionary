@@ -48,10 +48,6 @@ class WordViewModel(private val wordDao: WordDao, private var word: Word) : View
         }
     }
 
-    fun openWord() {
-        Companion.openWord(word)
-    }
-
     fun isEmptyWord(): Boolean =
             wordData.value?.isEmpty() ?: true
                     && translate.value?.isEmpty() ?: true
@@ -69,13 +65,5 @@ class WordViewModel(private val wordDao: WordDao, private var word: Word) : View
 
     }
 
-    companion object {
-        fun openWord(word: Word) {
-            val bundle = Bundle().apply {
-                putSerializable(WORD_ARG, word)
-            }
-            NavScreens.navController.navigate(R.id.wordFragment, bundle)
-        }
-    }
 }
 
