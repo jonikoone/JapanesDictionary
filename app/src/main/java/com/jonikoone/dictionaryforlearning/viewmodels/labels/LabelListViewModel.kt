@@ -30,9 +30,12 @@ class LabelListViewModel(private val labelDao: LabelDao) : ViewModel() {
 
 
     init {
-        labelDao.getLabels().observeForever{
+
+        adapter.updateList((0..100).map { it -> Label(title = "label N $it") })
+
+        /*labelDao.getLabels().observeForever{
             adapter.updateList(it)
-        }
+        }*/
     }
 
 

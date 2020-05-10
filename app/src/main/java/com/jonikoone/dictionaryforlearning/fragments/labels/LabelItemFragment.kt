@@ -13,13 +13,7 @@ import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class LabelItemFragment : Fragment() {
-
-    companion object {
-        const val LABEL = "jonikoone.label_fragment.label"
-    }
-
-    private val label: Label by lazy { arguments?.get(LABEL) as Label }
+class LabelItemFragment(private val label: Label) : Fragment() {
 
     private val labelViewModel: LabelViewModel by viewModel { parametersOf(label) }
 
