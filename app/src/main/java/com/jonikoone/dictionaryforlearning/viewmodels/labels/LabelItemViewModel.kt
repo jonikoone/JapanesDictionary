@@ -5,11 +5,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jonikoone.databasemodule.database.entites.Label
-import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.fragments.labels.LabelItemFragment
+import com.jonikoone.dictionaryforlearning.navigation.Screens
+import org.koin.core.KoinComponent
+import org.koin.core.inject
+import ru.terrakok.cicerone.Router
 
-class LabelItemViewModel(private val label: Label) : ViewModel() {
+class LabelItemViewModel(private val label: Label) : ViewModel(), KoinComponent{
+
+    val router: Router by inject()
 
     val labelTitle: LiveData<String> = MutableLiveData(label.title)
 
@@ -17,12 +22,9 @@ class LabelItemViewModel(private val label: Label) : ViewModel() {
 
     val labelColor: LiveData<Int> = MutableLiveData(label.color)
 
-    private fun createArgs() = Bundle().apply {
-        putSerializable(LabelItemFragment.LABEL, label)
-    }
 
     fun openLabelScreen() {
-        NavScreens.navController.navigate(R.id.labelEditFragment, createArgs())
+        router.navigateTo(Screens.LabelScreen(label))
     }
 
 }

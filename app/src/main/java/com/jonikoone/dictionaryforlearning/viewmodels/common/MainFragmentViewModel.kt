@@ -7,9 +7,28 @@ import androidx.lifecycle.ViewModel
 
 class MainFragmentViewModel : ViewModel() {
 
+    val mainFragmentState = MainFragmentState.LabelListState
+
     val titleScreen = MutableLiveData<String>()
+
+    var openDrawer: View.OnClickListener? = null
 
     val navigationClick = View.OnClickListener {
 
     }
 }
+
+sealed class MainFragmentState : State() {
+
+    object LabelListState : MainFragmentState() {
+
+    }
+
+}
+
+
+
+open class State() {
+
+}
+

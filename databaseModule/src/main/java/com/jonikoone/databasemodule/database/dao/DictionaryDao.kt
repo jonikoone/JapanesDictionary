@@ -14,7 +14,7 @@ interface DictionaryDao : BaseDao<Dictionary> {
     fun getDictionaries(): LiveData<List<Dictionary>>
 
     @Query(value = "select * from dictionaries where id_dictionary = :dictionaryId")
-    fun getDictionaryItem(dictionaryId: Long): LiveData<Dictionary>
+    fun getDictionaryItem(dictionaryId: Long): Dictionary
 
 
     // with label
@@ -24,7 +24,7 @@ interface DictionaryDao : BaseDao<Dictionary> {
 
     @Transaction
     @Query(value = "select * from dictionaries where id_dictionary = :dictionaryId")
-    fun getDictionaryWithLabelItem(dictionaryId: Long): LiveData<DictionaryWithLabel>
+    fun getDictionaryWithLabelItem(dictionaryId: Long): DictionaryWithLabel
 
 
     // with words

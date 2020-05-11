@@ -11,23 +11,25 @@ import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
+import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 class MainActivity : AppCompatActivity() {
 
-    private val cicerone: Cicerone<Router> by inject()
+    private val router: Router by inject()
     private val navigationHolder: NavigatorHolder by inject()
 
     private val navigation: Navigator =
         object : SupportAppNavigator(this, supportFragmentManager, R.id.hostFragment) {
-
-
-
+            override fun createFragment(screen: SupportAppScreen): Fragment? {
+                return (screen as Screens).fragment
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        cicerone.router.newRootScreen(Screens.LabelScreen())
+        router.newRootScreen(Screens.LabelListScreen())
+
     }
 
     override fun onResumeFragments() {

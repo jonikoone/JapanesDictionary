@@ -10,21 +10,26 @@ import androidx.lifecycle.viewModelScope
 import com.jonikoone.databasemodule.database.dao.DictionaryDao
 import com.jonikoone.databasemodule.database.entites.Dictionary
 import com.jonikoone.databasemodule.database.entites.Label
-import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.util.SuspendWork
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.KoinComponent
+import org.koin.core.inject
+import ru.terrakok.cicerone.Cicerone
+import ru.terrakok.cicerone.Router
 
 class DictionaryEditViewModel(dictionaryDao: DictionaryDao, dictionary: Dictionary) : ViewModel(),
-        SuspendWork<Dictionary> {
+        SuspendWork<Dictionary>, KoinComponent {
+
+    val router by inject<Router> ()
 
     val titleDictionary = MutableLiveData<String>()
     val labelColor = MutableLiveData<Int>()
 
     val backAction = View.OnClickListener {
-        NavScreens.navController.popBackStack()
+        router.exit()
     }
 
     init {

@@ -3,12 +3,10 @@ package com.jonikoone.dictionaryforlearning.viewmodels.words
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.*
-import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.databasemodule.database.AppDatabase
 import com.jonikoone.databasemodule.database.dao.WordDao
 import com.jonikoone.databasemodule.database.entites.Word
-import com.jonikoone.dictionaryforlearning.fragments.words.WordItemFragment.Companion.WORD_ARG
 import com.jonikoone.dictionaryforlearning.util.SuspendWork
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,11 +14,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import ru.terrakok.cicerone.Router
 import timber.log.Timber
 
 class WordViewModel(private val wordDao: WordDao, private var word: Word) : ViewModel(),
         KoinComponent, LifecycleObserver,
         SuspendWork<Word> {
+
+    val router: Router by inject()
 
     override var job: Job? = null
     override val delaySuspend: Long = 300
@@ -60,7 +61,7 @@ class WordViewModel(private val wordDao: WordDao, private var word: Word) : View
                     wordDao.delete(word)
                 }
             }
-            NavScreens.navController.popBackStack()
+            router.exit()
         }
 
     }

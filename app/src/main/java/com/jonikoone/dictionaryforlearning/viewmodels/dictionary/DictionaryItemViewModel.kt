@@ -9,23 +9,26 @@ import androidx.lifecycle.viewModelScope
 import com.jonikoone.databasemodule.database.AppDatabase
 import com.jonikoone.databasemodule.database.dao.DictionaryDao
 import com.jonikoone.databasemodule.database.entites.Dictionary
-import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.fragments.words.WordsListFragment.Companion.DICTIONARY_KEY
+import com.jonikoone.dictionaryforlearning.navigation.Screens
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import ru.terrakok.cicerone.Router
 
-class DictionaryItemViewModel(private val dictionaryDao: DictionaryDao, private val dictionary: Dictionary) : ViewModel() {
+class DictionaryItemViewModel(private val dictionaryDao: DictionaryDao, private val dictionary: Dictionary) : ViewModel(), KoinComponent {
+
+    val router: Router by inject()
 
     //val labelColor = MutableLiveData<Int>()
     val labelVisible = MutableLiveData(View.GONE)
     val titleDictionary = MutableLiveData<String>(dictionary.title)
 
     fun openDictionary() {
-        NavScreens.navController.navigate(R.id.action_dictionariesList_to_wordsListFragment, bundleOf(DICTIONARY_KEY to dictionary.id))
+        router.navigateTo(Screens.WordsListScreen(dictionary))
     }
 
     /*init {

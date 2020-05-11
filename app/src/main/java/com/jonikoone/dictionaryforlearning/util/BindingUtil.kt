@@ -7,6 +7,7 @@ import android.content.res.ColorStateList
 import android.view.View
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.textfield.TextInputLayout
 import timber.log.Timber
@@ -87,6 +88,12 @@ object BindingUtil {
     @BindingAdapter("app:setItemDecoration")
     fun setItemDecoration(recyclerView: RecyclerView, decorartionFactory: (RecyclerView) -> RecyclerView.ItemDecoration) {
         recyclerView.addItemDecoration(decorartionFactory(recyclerView))
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:setNavigationOnClickListener")
+    fun setNavigationOnClickListener(bottomAppBar: BottomAppBar, clickListener: View.OnClickListener) {
+        bottomAppBar.setNavigationOnClickListener(clickListener)
     }
 
 }

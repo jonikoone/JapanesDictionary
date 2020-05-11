@@ -6,11 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jonikoone.databasemodule.database.dao.WordDao
 import com.jonikoone.databasemodule.database.entites.Word
-import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
+import com.jonikoone.dictionaryforlearning.navigation.Screens
+import org.koin.core.KoinComponent
+import org.koin.core.inject
+import ru.terrakok.cicerone.Router
 import timber.log.Timber
 
-class WordItemViewModel(private val wordDao: WordDao, private var word: Word) : ViewModel() {
+class WordItemViewModel(private val wordDao: WordDao, private var word: Word) : ViewModel(), KoinComponent {
+
+    val router: Router by inject()
 
     private var isCheckable = false
 
@@ -39,7 +44,7 @@ class WordItemViewModel(private val wordDao: WordDao, private var word: Word) : 
     }
 
     fun openWord() {
-        NavScreens.navController.navigate(R.id.action_wordsListFragment_to_wordFragment)
+        router.navigateTo(Screens.WordScreen(word))
     }
 
     fun checkItem() {

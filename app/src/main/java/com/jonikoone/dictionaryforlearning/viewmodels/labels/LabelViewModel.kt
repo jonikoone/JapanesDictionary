@@ -12,19 +12,24 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.textfield.TextInputLayout
-import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.databasemodule.database.dao.LabelDao
 import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.dictionaryforlearning.fragments.labels.LabelItemFragment
+import com.jonikoone.dictionaryforlearning.navigation.Screens
 import com.jonikoone.dictionaryforlearning.util.*
 import com.jonikoone.dictionaryforlearning.views.ColorPickerView
 import kotlinx.coroutines.Job
 import okhttp3.internal.toHexString
+import org.koin.core.KoinComponent
+import org.koin.core.inject
+import ru.terrakok.cicerone.Router
 import timber.log.Timber
 
 class LabelViewModel(private val labelDao: LabelDao, private var label: Label) : ViewModel(),
-        SuspendWork<Label> {
+        SuspendWork<Label>, KoinComponent {
+
+    val router: Router by inject()
 
     override var job: Job? = null
     override val delaySuspend: Long = 200
@@ -66,7 +71,7 @@ class LabelViewModel(private val labelDao: LabelDao, private var label: Label) :
     }
 
     val navigationBack = View.OnClickListener {
-        NavScreens.navController.popBackStack()
+        router.exit()
     }
 
     val onClickStartIcon = View.OnClickListener {
@@ -84,12 +89,8 @@ class LabelViewModel(private val labelDao: LabelDao, private var label: Label) :
 
     }
 
-    private fun createArgs() = Bundle().apply {
-        putSerializable(LabelItemFragment.LABEL, label)
-    }
-
     fun openLabelScreen() {
-        NavScreens.navController.navigate(R.id.labelEditFragment, createArgs())
+        router.navigateTo(Screens.LabelScreen(label))
     }
 
     fun cancelChangeColor() {

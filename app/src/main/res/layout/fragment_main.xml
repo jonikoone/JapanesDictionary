@@ -11,8 +11,10 @@
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -26,7 +28,7 @@
                 android:fillViewport="true"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-                <fragment
+                <FrameLayout
                     android:id="@+id/hostFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -41,8 +43,11 @@
                 android:layout_gravity="bottom"
                 app:fabAlignmentMode="end"
                 app:hideOnScroll="true"
-                app:menu="@menu/bottom_nav_menu"
-                app:navigationIcon="@drawable/ic_menu" />
+                app:layout_scrollFlags=""
+                app:navigationIcon="@drawable/ic_menu"
+                app:setNavigationOnClickListener="@{viewModel.openDrawer}"
+                android:clickable="true"
+                android:focusable="true" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"

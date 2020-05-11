@@ -16,12 +16,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jonikoone.databasemodule.database.AppDatabase
 import com.jonikoone.databasemodule.database.dao.WordDao
+import com.jonikoone.databasemodule.database.entites.Dictionary
 import com.jonikoone.databasemodule.database.entites.Word
-import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.databinding.ItemWordBinding
-import com.jonikoone.dictionaryforlearning.fragments.words.WordItemFragment.Companion.WORD_ARG
 import com.jonikoone.dictionaryforlearning.generated.callback.OnClickListener
+import com.jonikoone.dictionaryforlearning.navigation.Screens
 import com.jonikoone.dictionaryforlearning.util.BaseAdapter
 import com.jonikoone.dictionaryforlearning.util.DiffCallback
 import kotlinx.coroutines.Dispatchers
@@ -31,10 +31,13 @@ import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
+import ru.terrakok.cicerone.Router
 import timber.log.Timber
 
-open class WordsListViewModel(private val database: AppDatabase, val dictionaryId: Long? = null) :
+open class WordsListViewModel(private val database: AppDatabase, val dictionary: Dictionary? = null) :
         ViewModel(), KoinComponent {
+
+    val router: Router by inject()
 
     val isFabRotate = MutableLiveData(false)
 
@@ -68,7 +71,7 @@ open class WordsListViewModel(private val database: AppDatabase, val dictionaryI
     }
 
     val backAction = View.OnClickListener {
-        NavScreens.navController.popBackStack()
+        router.exit()
     }
 
     val showFABs = View.OnLongClickListener {
@@ -92,19 +95,20 @@ open class WordsListViewModel(private val database: AppDatabase, val dictionaryI
             viewModelScope.launch {
                 var newWord: Word? = null
                 withContext(Dispatchers.IO) {
-                    var newWordId = database.getWordDao().insert(Word())
+                    val newWordId = database.getWordDao().insert(Word())
                     newWord = database.getWordDao().getWord(newWordId)
                 }
                 newWord?.let { word ->
-                    NavScreens.navController.navigate(R.id.wordFragment, bundleOf(WORD_ARG to word))
+                    router.navigateTo(Screens.WordScreen(word))
                 }
             }
         }
     }
 
     init {
-        if (dictionaryId != null) {
-            database.getDictionaryDao().getDictionaryWithWords(dictionaryId).observeForever {
+
+        if (dictionary != null) {
+            database.getDictionaryDao().getDictionaryWithWords(dictionary.id).observeForever {
                 titleDictionary.value = it.dictionary.title
                 adapter.updateList(it.words)
             }

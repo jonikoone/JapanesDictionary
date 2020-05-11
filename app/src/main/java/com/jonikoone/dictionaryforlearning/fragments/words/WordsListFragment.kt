@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import com.jonikoone.databasemodule.database.entites.Dictionary
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.databinding.FragmentWordsListBinding
 import com.jonikoone.dictionaryforlearning.viewmodels.words.WordsListViewModel
@@ -14,18 +15,9 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
 
-class WordsListFragment : Fragment() {
+class WordsListFragment(private val dictionary: Dictionary) : Fragment() {
 
-    var dictionaryId by Delegates.notNull<Long>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        arguments?.let {
-            dictionaryId = it.getLong(DICTIONARY_KEY)
-        }
-        super.onCreate(savedInstanceState)
-    }
-
-    private val viewModel: WordsListViewModel by viewModel { parametersOf(dictionaryId) }
+    private val viewModel: WordsListViewModel by viewModel { parametersOf(dictionary) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

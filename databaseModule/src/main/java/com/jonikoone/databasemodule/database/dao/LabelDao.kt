@@ -11,7 +11,7 @@ interface LabelDao : BaseDao<Label>{
     fun getLabels() : LiveData<List<Label>>
 
     @Query(value = "select * from labels where id_label = :idLabel")
-    fun getLabel(idLabel: Long) : LiveData<Label>
+    fun getLabel(idLabel: Long) : Label
 
 }
 

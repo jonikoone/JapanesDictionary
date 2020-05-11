@@ -14,7 +14,7 @@
         />
 
 
-    <item
+    <!--<item
         android:id="@+id/testsFragment"
         android:title="Test"
         android:icon="@drawable/ic_testing"/>
@@ -24,7 +24,7 @@
     <item
         android:id="@+id/statisticsFragment"
         android:title="Statistic"
-        android:icon="@drawable/ic_chart_statistic"/>
+        android:icon="@drawable/ic_chart_statistic"/>-->
 
     <item
         android:id="@+id/labelListFragment"

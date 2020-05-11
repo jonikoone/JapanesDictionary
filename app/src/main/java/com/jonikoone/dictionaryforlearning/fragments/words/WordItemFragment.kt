@@ -13,15 +13,9 @@ import com.jonikoone.dictionaryforlearning.viewmodels.words.WordViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class WordItemFragment : Fragment() {
+class WordItemFragment(private val word: Word) : Fragment() {
 
-    companion object {
-        const val WORD_ARG = "jonikoone.word.WordEntity"
-    }
-
-    private val wordId by lazy { arguments?.getSerializable(WORD_ARG) as Word }
-
-    private val wordViewModel by viewModel<WordViewModel> { parametersOf(wordId) }
+    private val wordViewModel by viewModel<WordViewModel> { parametersOf(word) }
 
     override fun onCreateView(
         inflater: LayoutInflater,

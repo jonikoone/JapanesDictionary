@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.jonikoone.databasemodule.database.dao.DictionaryDao
 import com.jonikoone.databasemodule.database.entites.Dictionary
-import com.jonikoone.dictionaryforlearning.NavScreens
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.databinding.ItemDictionaryBinding
 import com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaryFragment.Companion.DICTIONARY_ID
+import com.jonikoone.dictionaryforlearning.navigation.Screens
 import com.jonikoone.dictionaryforlearning.util.BaseAdapter
 import com.jonikoone.dictionaryforlearning.util.DiffCallback
 import kotlinx.coroutines.Dispatchers
@@ -22,10 +22,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.get
+import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
+import ru.terrakok.cicerone.Router
 
 
-class DictionaryListViewModel(private val dictionaryDao: DictionaryDao) : ViewModel() {
+class DictionaryListViewModel(private val dictionaryDao: DictionaryDao) : ViewModel(), KoinComponent {
+
+    val router: Router by inject()
 
     val adapter = DictionaryListAdapter()
 
@@ -42,11 +46,9 @@ class DictionaryListViewModel(private val dictionaryDao: DictionaryDao) : ViewMo
     fun addDictionary() {
         viewModelScope.launch(Dispatchers.IO) {
             val idDict = dictionaryDao.insert(Dictionary())
+            val dictionary = dictionaryDao.getDictionaryItem(idDict)
             withContext(Dispatchers.Main) {
-                NavScreens.navController.navigate(
-                        R.id.action_dictionariesList_to_dictionaryEditFragment,
-                        bundleOf(DICTIONARY_ID to idDict)
-                )
+                router.navigateTo(Screens.DictionaryEditScreen(dictionary))
             }
         }
     }

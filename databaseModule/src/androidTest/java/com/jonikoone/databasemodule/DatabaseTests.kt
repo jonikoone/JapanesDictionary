@@ -56,11 +56,9 @@ class DatabaseTests {
         val label = mock(Label::class.java)
         `when`(label.title).thenReturn("test label")
         val labelId = labelDao.insert(label)
-        labelDao.getLabel(labelId).test()
-                .awaitValue()
-                .assertHasValue()
-                .assertValue { it.id != 0L }
-                .assertValue { it.title == label.title }
+        val label1 = labelDao.getLabel(labelId)
+        assert(label1.id != 0L)
+        assert(label1.title == label.title)
     }
 
     @Test

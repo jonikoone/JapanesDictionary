@@ -48,7 +48,7 @@ val appModule = module {
     //word
     viewModel { (word: Word) -> WordViewModel(get(), word) }
     viewModel { (word: Word) -> WordItemViewModel(get(), word) }
-    viewModel { (dictionaryId: Long?) -> WordsListViewModel(get(), dictionaryId) }
+    viewModel { (dictionary: Dictionary?) -> WordsListViewModel(get(), dictionary) }
 
     //dictionary
     viewModel { DictionaryListViewModel(get()) }
