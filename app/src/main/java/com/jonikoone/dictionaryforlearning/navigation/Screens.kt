@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import com.jonikoone.databasemodule.database.entites.Dictionary
 import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.databasemodule.database.entites.Word
+import com.jonikoone.dictionaryforlearning.fragments.MainFragment
 import com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaryEditFragment
 import com.jonikoone.dictionaryforlearning.fragments.dictionary.DictionaryListFragment
 import com.jonikoone.dictionaryforlearning.fragments.labels.LabelItemFragment
@@ -19,15 +20,17 @@ sealed class Screens(private val fragmentFactory: () -> Fragment) : SupportAppSc
         return fragmentFactory()
     }
 
-    //class HomeScreen : Screens(fragmentFactory = {})
+    object HomeScreen : Screens({ MainFragment() })
 
-    class LabelListScreen : Screens(::LabelListFragment)
+    class LabelListScreen : Screens({ LabelListFragment() })
     class LabelScreen(label: Label) : Screens({ LabelItemFragment(label) })
 
     class WordsListScreen(dictionary: Dictionary) : Screens({ WordsListFragment(dictionary) })
     class WordScreen(word: Word) : Screens({ WordItemFragment(word) })
 
-    class DictionaryEditScreen(dictionary: Dictionary) : Screens({ DictionaryEditFragment(dictionary) })
+    class DictionaryEditScreen(dictionary: Dictionary) :
+        Screens({ DictionaryEditFragment(dictionary) })
+
     class DictionaryListScreen() : Screens(::DictionaryListFragment)
 
 
