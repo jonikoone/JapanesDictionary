@@ -6,7 +6,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.jonikoone.dictionaryforlearning.databinding.ItemLabelBinding
 import timber.log.Timber
 
 abstract class BaseAdapter<T> :

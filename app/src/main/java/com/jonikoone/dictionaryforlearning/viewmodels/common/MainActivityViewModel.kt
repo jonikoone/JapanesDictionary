@@ -12,7 +12,7 @@ class MainActivityViewModel : ViewModel(), KoinComponent {
     }
 
     fun onClick() {
-        functionClick?.invoke()
+        functionClick.invoke()
     }
 
     fun setFabOnClick(onClick: () -> Unit) {

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_sheet_card_bg"
+    android:elevation="16dp"
+    app:behavior_hideable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <ImageButton
+                android:id="@+id/cancelChange_imageButton_colorBottomSheet"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="#00000000"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_close" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="56dp"
+                android:layout_marginEnd="56dp"
+                android:ellipsize="end"
+                android:gravity="center|start"
+                android:text="Choose color for your label"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Button" />
+
+            <ImageButton
+                android:id="@+id/applyChange_imageButton_colorBottomSheet"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="end"
+                android:background="#00000000"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_apply"
+                android:tint="@color/colorPrimaryDark" />
+
+        </FrameLayout>
+
+        <com.jonikoone.dictionaryforlearning.views.ColorPickerView
+            android:id="@+id/colorPicker_colorBottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:layerType="software"
+            app:init_color="#ff123456"
+            />
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,24 +1,12 @@
 package com.jonikoone.dictionaryforlearning.viewmodels.labels
 
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.NumberPicker
-import androidx.annotation.ColorInt
-import androidx.databinding.Bindable
-import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.textfield.TextInputLayout
-import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.databasemodule.database.dao.LabelDao
 import com.jonikoone.databasemodule.database.entites.Label
-import com.jonikoone.dictionaryforlearning.fragments.labels.LabelItemFragment
 import com.jonikoone.dictionaryforlearning.navigation.Screens
 import com.jonikoone.dictionaryforlearning.util.*
-import com.jonikoone.dictionaryforlearning.views.ColorPickerView
 import kotlinx.coroutines.Job
 import okhttp3.internal.toHexString
 import org.koin.core.KoinComponent

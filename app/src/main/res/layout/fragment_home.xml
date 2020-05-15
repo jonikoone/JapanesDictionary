@@ -4,21 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<fragment
-        android:id="@+id/fragmentNavigationHost"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="56dp"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph" />-->
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:gravity="center"
+       android:text="Home"/>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/mainBottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom"
-        app:menu="@menu/bottom_nav_menu">
 
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
 </FrameLayout>

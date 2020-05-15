@@ -10,7 +10,6 @@ import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryItemV
 import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryListViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryEditViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelItemViewModel
-import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelListViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.words.WordItemViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.words.WordViewModel
@@ -43,7 +42,6 @@ val appModule = module {
     //label
     viewModel { (label: Label) -> LabelItemViewModel(label) }
     viewModel { (label: Label) -> LabelViewModel(get(), label) }
-    viewModel { LabelListViewModel(get()) }
 
     //word
     viewModel { (word: Word) -> WordViewModel(get(), word) }
