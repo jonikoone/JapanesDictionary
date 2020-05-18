@@ -3,18 +3,15 @@ package com.jonikoone.dictionaryforlearning.presentation.main
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
+import androidx.drawerlayout.widget.DrawerLayout
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.google.android.material.navigation.NavigationView
 import com.jonikoone.dictionaryforlearning.R
-import com.jonikoone.dictionaryforlearning.fragments.home.HomeFragment
 import com.jonikoone.dictionaryforlearning.navigation.Screens
-import okhttp3.Route
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.Router
-import timber.log.Timber
 
 @InjectViewState
 class MainPresenter : MvpPresenter<MainView>(), KoinComponent {
@@ -23,31 +20,29 @@ class MainPresenter : MvpPresenter<MainView>(), KoinComponent {
     val cicerone: Cicerone<Router> by inject()
     var isNavigationOpen = false
 
+    val stateStack = mutableListOf<MainAction?>()
+
     var state: MainAction? = Screens.HomeScreen.getActionFragment()
 
     init {
         viewState.applyChangeState()
-    }
-
-    fun navigate(screen: Screens): Boolean {
-        state = screen.getActionFragment()
-        router.navigateTo(screen)
-        viewState.applyChangeState()
-        viewState.toggleNavigation(false)
-        return true
-    }
-
-    fun exit() {
-        
-    }
-
-    fun toggleNavigation(isToggle: Boolean) {
-        isNavigationOpen = isToggle
-        viewState.toggleNavigation(isNavigationOpen)
+        navigationManager = this
     }
 
     fun clickOnFab() {
         state?.clickOnFab?.invoke()
+    }
+
+    fun addState(action: MainAction?) {
+        stateStack.add(action)
+        state = stateStack.last()
+        viewState.applyChangeState()
+    }
+
+    fun removeLastState() {
+        stateStack.remove(stateStack.last())
+        state = stateStack.last()
+        viewState.applyChangeState()
     }
 }
 
@@ -56,8 +51,11 @@ data class MainAction(
     val isShowFab: Boolean = true,
     val clickOnFab: (() -> Unit)? = null,
     @IdRes val layoutAnchor: Int? = null,
-    val isShowBottomAppBar: Boolean = true
+    val isShowBottomAppBar: Boolean = true,
+    val lockModeTopHostFragment: Int = DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+    val isShowAppBar: Boolean = true
 )
 
-
+//TODO: Fix this solution
+var navigationManager: MainPresenter? = null
 

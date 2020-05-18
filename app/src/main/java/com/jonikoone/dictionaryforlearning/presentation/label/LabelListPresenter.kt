@@ -18,8 +18,12 @@ class LabelListPresenter : MvpPresenter<LabelListView>(), KoinComponent {
 
     fun addLabel() {
         mvpScope.launch(Dispatchers.IO) {
-            labelDao.insert(Label())
+            val labelId = labelDao.insert(Label())
+            val label = labelDao.getLabel(labelId)
             loadDataToAdapter()
+            withContext(Dispatchers.Main) {
+                viewState.clickOnLabel(label)
+            }
         }
     }
 

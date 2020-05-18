@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -21,12 +18,12 @@
         app:startIconDrawable="@drawable/ic_label">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/title_editText_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/material_on_primary_emphasis_high_type"
             android:ellipsize="end"
             android:maxLines="1"
-            android:id="@+id/title_editText_label"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -57,8 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:max="15"
-                android:padding="16dp"
-                />
+                android:padding="16dp" />
 
         </LinearLayout>
 

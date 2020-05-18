@@ -59,16 +59,16 @@ class LabelListFragment : MvpAppCompatFragment(), LabelListView, FragmentActionC
         router.navigateTo(Screens.LabelScreen(label))
     }
 
+    override fun updateList(labelList: List<Label>) {
+        adapter.updateList(labelList)
+    }
+
     override val action = MainAction(
             iconFab = R.drawable.ic_add,
             clickOnFab = {
                 clickOnAddLabel()
             }
-        )
-
-    override fun updateList(labelList: List<Label>) {
-        adapter.updateList(labelList)
-    }
+    )
 
     inner class LabelListAdapter : BaseAdapter<Label>() {
         override fun createDiffCallback(

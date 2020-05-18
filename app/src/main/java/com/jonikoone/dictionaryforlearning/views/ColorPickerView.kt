@@ -4,9 +4,12 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import com.jonikoone.dictionaryforlearning.R
+import okhttp3.internal.toHexString
+import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates
@@ -125,6 +128,11 @@ class ColorPickerView : View {
         canvas?.drawRect(foregroundColorLabelRect, foregroundColorLabelPaint)
     }
 
+    override fun performClick(): Boolean {
+        performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+        return super.performClick()
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean = when(event.actionMasked) {
         MotionEvent.ACTION_DOWN -> {
             touchX = event.x
@@ -158,39 +166,40 @@ class ColorPickerView : View {
         else -> false
     }
 
-    private fun createColor(nZone: Int, block: (addedColor: Int) -> Int): Int{
-        val xx = x - zoneColor * nZone
+    private fun createColor(nZone: Int, x: Float, block: (addedColor: Int) -> Int): Int{
+        val xx = x - (zoneColor * nZone)
+        Timber.d("ColorPicker: create color for zone: $nZone - $xx, when x=$x")
         val addedColor: Int = (0xff * (xx / zoneColor)).roundToInt()
         return block(addedColor)
     }
 
     fun RectF.getColorFromTouch(x: Float, y: Float): Int {
         val yDelta = 1 - (y / height) // 0 <= y <= 1
-        val xDelta = x / width // 0 <= x <= 1
+        //val xDelta = x / width // 0 <= x <= 1
 
         val color = when {
-            x >= 0 && x < zoneColor -> createColor(0) {
+            x >= 0 && x < zoneColor -> createColor(0, x) {
                 ((0x00 or (0xff * yDelta).toInt()) shl 16) or ((0x00 or (it * yDelta).toInt()) shl 8)
             }
-            x >= zoneColor && x < zoneColor * 2 -> createColor(1) {
+            x >= zoneColor && x < zoneColor * 2 -> createColor(1, x) {
                 ((0x00 or ((0xff - it) * yDelta).toInt()) shl 16) or ((0x00 or (0xff * yDelta).toInt()) shl 8)
             }
-            x >= zoneColor * 2 && x < zoneColor * 3 -> createColor(2) {
+            x >= zoneColor * 2 && x < zoneColor * 3 -> createColor(2, x) {
                 (0x00 shl 16) or ((0xff * yDelta).toInt() shl 8) or (0x00 or (it * yDelta).toInt())
             }
-            x >= zoneColor * 3 && x < zoneColor * 4 -> createColor(3) {
+            x >= zoneColor * 3 && x < zoneColor * 4 -> createColor(3, x) {
                 (0x00 shl 16) or ((0x00 or ((0xff - it) * yDelta).toInt()) shl 8) or (0x00 or (0xff * yDelta).toInt())
             }
-            x >= zoneColor * 4 && x < zoneColor * 5 -> createColor(4) {
+            x >= zoneColor * 4 && x < zoneColor * 5 -> createColor(4, x) {
                 ((0x00 or (it * yDelta).toInt()) shl 16) or (0x00 shl 8) or (0xff * yDelta).toInt()
             }
-            x >= zoneColor * 5 && x < zoneColor * 6 -> createColor(5) {
+            x >= zoneColor * 5 && x < zoneColor * 6 -> createColor(5, x) {
                 (((0xff * yDelta).toInt()) shl 16) or (0x00 shl 8) or (0x00 or ((0xff - it) * yDelta).toInt())
             }
 
             else -> 0x000000
         }
-
+        Timber.d("ColorPicker: getColorFromTouch: #${color.toHexString()}")
         return (foregroundColorLabelPaint.alpha shl 24) or color
     }
 

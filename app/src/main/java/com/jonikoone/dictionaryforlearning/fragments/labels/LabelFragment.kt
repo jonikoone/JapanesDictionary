@@ -1,6 +1,5 @@
 package com.jonikoone.dictionaryforlearning.fragments.labels
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
@@ -10,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.arellomobile.mvp.MvpAppCompatFragment
@@ -19,6 +17,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.dictionaryforlearning.R
+import com.jonikoone.dictionaryforlearning.fragments.SlideFrameLayout
 import com.jonikoone.dictionaryforlearning.navigation.FragmentActionContainer
 import com.jonikoone.dictionaryforlearning.presentation.label.LabelPresenter
 import com.jonikoone.dictionaryforlearning.presentation.label.LabelView
@@ -31,7 +30,7 @@ import ru.terrakok.cicerone.Router
 import timber.log.Timber
 
 class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), LabelView,
-    FragmentActionContainer {
+        FragmentActionContainer {
 
 
     @InjectPresenter
@@ -46,16 +45,16 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
 
     private val colorLabel = MutableLiveData<Label>(editableLabel).apply {
         observe(this@LabelFragment,
-            Observer<Label> {
-                editableLabel = it
-                updateLabelColor()
-            })
+                Observer<Label> {
+                    editableLabel = it
+                    updateLabelColor()
+                })
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_label, container, false)
     }
@@ -92,34 +91,34 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
                         updateLabelColor()
                     }
                 }
-                    .show(childFragmentManager, "colorBottomSheetDialog")
+                        .show(childFragmentManager, "colorBottomSheetDialog")
             }
         }
 
         titleEditText.addTextChangedListener(
-            object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {}
+                object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {}
 
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {}
+                    override fun beforeTextChanged(
+                            s: CharSequence?,
+                            start: Int,
+                            count: Int,
+                            after: Int
+                    ) {
+                    }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    editableLabel = editableLabel.copy(title = s.toString())
-                    //updateLabelTitle()
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        editableLabel = editableLabel.copy(title = s.toString())
+                        updateShowError()
+                    }
                 }
-
-            }
         )
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(
-                seekBar: SeekBar?,
-                progress: Int,
-                fromUser: Boolean
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
             ) {
                 editableLabel = editableLabel.copy(difficulty = progress)
                 updateLabelDifficulty()
@@ -138,7 +137,7 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
 
     override fun updateLabelColor() {
         textInputLayput.setStartIconTintList(
-            ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(editableLabel.color))
+                ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(editableLabel.color))
         )
     }
 
@@ -151,8 +150,8 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
     }
 
     override val action = MainAction(
-        isShowFab = false,
-        isShowBottomAppBar = false
+            isShowAppBar = false,
+            isShowFab = false
     )
 
 }

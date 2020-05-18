@@ -1,11 +1,15 @@
 package com.jonikoone.dictionaryforlearning.fragments
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -13,6 +17,12 @@ import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.navigation.Screens
 import com.jonikoone.dictionaryforlearning.presentation.main.MainPresenter
 import com.jonikoone.dictionaryforlearning.presentation.main.MainView
+import org.koin.android.ext.android.inject
+import ru.terrakok.cicerone.Navigator
+import ru.terrakok.cicerone.NavigatorHolder
+import ru.terrakok.cicerone.Router
+import ru.terrakok.cicerone.commands.*
+import timber.log.Timber
 
 class MainFragment : MvpAppCompatFragment(), MainView {
 
@@ -21,11 +31,72 @@ class MainFragment : MvpAppCompatFragment(), MainView {
 
     private lateinit var drawer: DrawerLayout
     private lateinit var fab: FloatingActionButton
+    private lateinit var appBar: BottomAppBar
+    //private lateinit var topHost: FrameLayout
+
+    val router: Router by inject()
+    val navigatorHolder: NavigatorHolder by inject()
+
+    private val navigator by lazy {
+        object : Navigator {
+            @IdRes
+            val mainHostFragment: Int = R.id.hostFragment
+
+            //val othersHostFragment: IntArray = intArrayOf(R.id.topHostFragment)
+            val fm = childFragmentManager
+
+            override fun applyCommands(commands: Array<out Command>) {
+                fm.executePendingTransactions()
+
+                for (command in commands) {
+                    try {
+                        when (command) {
+                            is Forward -> {
+                                val screen = command.screen as Screens
+                                presenter.addState(screen.getActionFragment())
+                                screen.fragment?.let {
+                                    val containerId = mainHostFragment
+                                    fm.beginTransaction()
+                                            .replace(containerId, it)
+                                            .addToBackStack(screen.screenKey)
+                                            .commit()
+                                }
+                            }
+                            is Replace -> {
+                                //activityReplace(command)
+                            }
+                            is BackTo -> {
+                                //backTo(command)
+                            }
+                            is Back -> {
+                                presenter.removeLastState()
+                                fm.popBackStack()
+                            }
+                        }
+                    } catch (e: RuntimeException) {
+                        //errorOnApplyCommand(command, e)
+                    }
+                }
+            }
+
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        navigatorHolder.setNavigator(navigator)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        navigatorHolder.removeNavigator()
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
@@ -33,38 +104,36 @@ class MainFragment : MvpAppCompatFragment(), MainView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         drawer = view.findViewById(R.id.drawerLayout)
         fab = view.findViewById(R.id.mainFab)
+        appBar = view.findViewById(R.id.bottomAppBar)
+        //topHost = view.findViewById(R.id.topHostFragment)
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
         initClickListeners(view)
         initNavigationListener(view)
+        router.navigateTo(Screens.HomeScreen)
     }
 
 
     fun initClickListeners(view: View) {
-        view.findViewById<BottomAppBar>(R.id.bottomAppBar).setNavigationOnClickListener {
-            presenter.toggleNavigation(true)
+        appBar.setNavigationOnClickListener {
+            drawer.openDrawer(GravityCompat.START)
         }
 
-        view.findViewById<FloatingActionButton>(R.id.mainFab).setOnClickListener {
+        fab.setOnClickListener {
             presenter.clickOnFab()
         }
 
     }
 
     fun initNavigationListener(view: View) {
-        view.findViewById<NavigationView>(R.id.mainNavigation).setNavigationItemSelectedListener{ item ->
-            when (item.itemId) {
-                R.id.homeFragment -> presenter.navigate(Screens.HomeScreen)
-                R.id.labelListFragment -> presenter.navigate(Screens.LabelListScreen)
-                R.id.dictionariesFragment -> presenter.navigate(Screens.DictionaryListScreen())
-                else -> false
-            }
-        }
-    }
-
-    override fun toggleNavigation(isToggle: Boolean) {
-        if (!isToggle)
+        view.findViewById<NavigationView>(R.id.mainNavigation).setNavigationItemSelectedListener { item ->
             drawer.closeDrawer(GravityCompat.START)
-        else
-            drawer.openDrawer(GravityCompat.START)
+            when (item.itemId) {
+                R.id.homeFragment -> router.navigateTo(Screens.HomeScreen)
+                R.id.labelListFragment -> router.navigateTo(Screens.LabelListScreen)
+                R.id.dictionariesFragment -> router.navigateTo(Screens.DictionaryListScreen())
+            }
+            true
+        }
     }
 
     override fun clickOnFloatingActionButton() {
@@ -76,20 +145,30 @@ class MainFragment : MvpAppCompatFragment(), MainView {
     }
 
     override fun setShowFab(isShow: Boolean) {
-        when (isShow) {
-            true -> fab.show()
-            false -> fab.hide()
-        }
+        if (isShow) fab.show()
+        else fab.hide()
     }
 
     override fun setLayoutAnchor(id: Int) {
 
     }
 
+    override fun setShowBottomAppBar(isShow: Boolean) {
+        val behavior = appBar.behavior as HideBottomViewOnScrollBehavior<BottomAppBar>
+        if (isShow) behavior.slideUp(appBar)
+        else behavior.slideDown(appBar)
+    }
+
     override fun applyChangeState() {
+        Timber.d("MainFragment: ApplyMainState")
         presenter.state?.let {
             setIconForFab(it.iconFab)
             setShowFab(it.isShowFab)
+            setShowBottomAppBar(it.isShowBottomAppBar)
+            if (it.isShowAppBar) {
+                appBar.performShow()
+            } else
+                appBar.performHide()
         }
     }
 }

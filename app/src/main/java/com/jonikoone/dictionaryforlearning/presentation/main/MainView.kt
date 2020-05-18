@@ -8,8 +8,6 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 // описываются экшены которые точно описаны в активити
 interface MainView : MvpView {
 
-    fun toggleNavigation(isToggle: Boolean)
-
     //action items
     fun setIconForFab(@DrawableRes id: Int)
     fun setShowFab(isShow: Boolean)
