@@ -71,7 +71,7 @@ open class WordsListViewModel(private val database: AppDatabase, val dictionary:
     }
 
     val backAction = View.OnClickListener {
-        router.exit()
+
     }
 
     val showFABs = View.OnLongClickListener {

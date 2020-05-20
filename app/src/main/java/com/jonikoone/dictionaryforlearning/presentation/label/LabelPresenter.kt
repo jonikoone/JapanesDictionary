@@ -22,7 +22,10 @@ class LabelPresenter : MvpPresenter<LabelView>(), KoinComponent {
 
     fun updateLabel(label: Label) {
         mvpScope.launch(Dispatchers.IO) {
-            labelDao.update(label)
+            if (label.title.isNotEmpty())
+                labelDao.update(label)
+            else
+                labelDao.delete(label)
         }
     }
 

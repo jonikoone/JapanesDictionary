@@ -1,21 +1,11 @@
 package com.jonikoone.dictionaryforlearning
 
-import android.content.Context
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.jonikoone.dictionaryforlearning.fragments.MainFragment
-import com.jonikoone.dictionaryforlearning.navigation.Screens
 import org.koin.android.ext.android.inject
-import ru.terrakok.cicerone.Cicerone
-import ru.terrakok.cicerone.Navigator
-import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
-import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
 
     private val router: Router by inject()
     /*
@@ -31,6 +21,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        supportFragmentManager.beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.mainFragmentContainer, TestMoxyFragment())
+                .commit()
         //router.newRootScreen(Screens.HomeScreen)
     }
 

@@ -7,14 +7,15 @@
     android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         android:id="@+id/title_textInputLayout_label"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
         android:focusable="true"
         android:hint="Label name"
+        app:errorTextColor="@color/design_default_color_error"
         app:startIconDrawable="@drawable/ic_label">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -24,7 +25,8 @@
             android:backgroundTint="@color/material_on_primary_emphasis_high_type"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+            android:lines="1"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -45,7 +47,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text='@{"Difficulty: " + viewModel.labelDifficulty.toString()}'
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 tools:text="Difficulty: 12" />
 

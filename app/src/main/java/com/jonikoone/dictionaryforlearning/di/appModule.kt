@@ -7,7 +7,6 @@ import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.databasemodule.database.entites.Word
 import com.jonikoone.dictionaryforlearning.viewmodels.common.MainFragmentViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryItemViewModel
-import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryListViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryEditViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelItemViewModel
 import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelViewModel
@@ -35,7 +34,7 @@ val appModule = module {
     single { cicerone.navigatorHolder }
 
 
-    //view models
+    /*//view models
     //main fragment
     viewModel { MainFragmentViewModel() }
 
@@ -51,6 +50,6 @@ val appModule = module {
     //dictionary
     viewModel { DictionaryListViewModel(get()) }
     viewModel { (dictionary: Dictionary) -> DictionaryItemViewModel(get(), dictionary) }
-    viewModel { (dictionary: Dictionary) -> DictionaryEditViewModel(get(), dictionary) }
+    viewModel { (dictionary: Dictionary) -> DictionaryEditViewModel(get(), dictionary) }*/
 
 }

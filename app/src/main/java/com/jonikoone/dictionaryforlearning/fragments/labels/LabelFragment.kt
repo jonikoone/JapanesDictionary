@@ -84,6 +84,7 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
 
     fun initListeners(view: View) {
         textInputLayput.let {
+
             it.setStartIconOnClickListener {
                 ColorPickerBottomSheetFragmentWithDismissCallback(editableLabel) {
                     CoroutineScope(Dispatchers.Main).launch {
@@ -125,9 +126,7 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-
         })
     }
 
@@ -147,6 +146,13 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
 
     override fun updateLabelDifficultySeek() {
         seekBar.progress = editableLabel.difficulty
+    }
+
+    override fun updateShowError() {
+        textInputLayput.error =
+                if (editableLabel.title.isEmpty())
+                    "label should have a title!"
+                else null
     }
 
     override val action = MainAction(

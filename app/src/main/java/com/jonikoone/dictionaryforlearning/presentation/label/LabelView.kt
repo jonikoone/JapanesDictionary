@@ -8,5 +8,6 @@ interface LabelView : MvpView {
     fun updateLabelColor()
     fun updateLabelDifficulty()
     fun updateLabelDifficultySeek()
+    fun updateShowError()
 
 }

@@ -61,7 +61,7 @@ class WordViewModel(private val wordDao: WordDao, private var word: Word) : View
                     wordDao.delete(word)
                 }
             }
-            router.exit()
+            //router.exit()
         }
 
     }

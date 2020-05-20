@@ -64,11 +64,14 @@ dependencies {
 
     kapt 'com.android.databinding:compiler:3.2.1'
 
-    //mvp
+    //mvp for X
     implementation 'tech.schoolhelper:moxy-x:1.7.0'
-    kapt 'tech.schoolhelper:moxy-x-compiler:1.7.0'
-    //implementation 'com.arello-mobile:moxy-android:1.5.5'
     implementation 'tech.schoolhelper:moxy-x-androidx:1.7.0'
+    kapt 'tech.schoolhelper:moxy-x-compiler:1.7.0'
+
+    //mvp
+    //implementation 'com.arello-mobile:moxy-android:1.5.5'
+    //kapt 'com.arello-mobile:moxy-compiler:1.5.5'
 
     //networking
     implementation 'com.squareup.okhttp3:okhttp:4.4.1'

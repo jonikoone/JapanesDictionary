@@ -29,7 +29,7 @@ class DictionaryEditViewModel(dictionaryDao: DictionaryDao, dictionary: Dictiona
     val labelColor = MutableLiveData<Int>()
 
     val backAction = View.OnClickListener {
-        router.exit()
+        //router.exit()
     }
 
     init {

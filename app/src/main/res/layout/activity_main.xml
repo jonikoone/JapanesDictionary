@@ -7,10 +7,15 @@
     android:layout_height="match_parent"
     android:id="@+id/mainFragmentContainer">
 
-    <fragment
+    <!--<fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.jonikoone.dictionaryforlearning.fragments.MainFragment"/>
+        android:name="com.jonikoone.dictionaryforlearning.TestMaxyFragment"/>-->
+
+    <!--<fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.jonikoone.dictionaryforlearning.fragments.MainFragment"/>-->
 
 </FrameLayout>
 

@@ -1,6 +1,5 @@
 package com.jonikoone.dictionaryforlearning.presentation.main
 
-import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.drawerlayout.widget.DrawerLayout
@@ -18,16 +17,10 @@ class MainPresenter : MvpPresenter<MainView>(), KoinComponent {
 
     val router: Router by inject()
     val cicerone: Cicerone<Router> by inject()
-    var isNavigationOpen = false
 
     val stateStack = mutableListOf<MainAction?>()
 
     var state: MainAction? = Screens.HomeScreen.getActionFragment()
-
-    init {
-        viewState.applyChangeState()
-        navigationManager = this
-    }
 
     fun clickOnFab() {
         state?.clickOnFab?.invoke()
@@ -36,13 +29,30 @@ class MainPresenter : MvpPresenter<MainView>(), KoinComponent {
     fun addState(action: MainAction?) {
         stateStack.add(action)
         state = stateStack.last()
-        viewState.applyChangeState()
+        applyState()
     }
 
     fun removeLastState() {
         stateStack.remove(stateStack.last())
         state = stateStack.last()
-        viewState.applyChangeState()
+        applyState()
+    }
+
+    fun applyState() {
+        state?.let {
+            viewState.setShowFab(it.isShowFab)
+            viewState.bottomAppBar(it.isShowAppBar)
+        }
+    }
+
+    fun navigate(screen: Screens) {
+        viewState.navigate(screen)
+        addState(screen.getActionFragment())
+    }
+
+    fun navigateIfNeeded(screen: Screens) {
+        if (stateStack.size == 0)
+            navigate(screen)
     }
 }
 
@@ -55,7 +65,3 @@ data class MainAction(
     val lockModeTopHostFragment: Int = DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
     val isShowAppBar: Boolean = true
 )
-
-//TODO: Fix this solution
-var navigationManager: MainPresenter? = null
-

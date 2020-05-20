@@ -48,7 +48,9 @@ sealed class Screens(
 
     class DictionaryListScreen() : Screens(DictionaryListFragment())
 
-
+    override fun toString(): String {
+        return "{Screen: ${this.screenKey}, ${this.fragment.javaClass.canonicalName}}"
+    }
 
 }
 

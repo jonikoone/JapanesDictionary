@@ -18,10 +18,13 @@ import com.jonikoone.dictionaryforlearning.navigation.Screens
 import com.jonikoone.dictionaryforlearning.presentation.label.LabelListPresenter
 import com.jonikoone.dictionaryforlearning.presentation.label.LabelListView
 import com.jonikoone.dictionaryforlearning.presentation.main.MainAction
+import com.jonikoone.dictionaryforlearning.presentation.main.MainPresenter
+import com.jonikoone.dictionaryforlearning.presentation.main.MainView
 import com.jonikoone.dictionaryforlearning.util.BaseAdapter
 import com.jonikoone.dictionaryforlearning.util.DiffCallback
 import org.koin.android.ext.android.inject
 import org.koin.core.KoinComponent
+import org.koin.core.inject
 import ru.terrakok.cicerone.Router
 import timber.log.Timber
 
@@ -31,8 +34,6 @@ class LabelListFragment : MvpAppCompatFragment(), LabelListView, FragmentActionC
     lateinit var presenter: LabelListPresenter
 
     val router: Router by inject()
-
-    lateinit var adapter: LabelListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,8 +46,7 @@ class LabelListFragment : MvpAppCompatFragment(), LabelListView, FragmentActionC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<RecyclerView>(R.id.recycler_labelList)?.let {
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = LabelListAdapter()
-            it.adapter = adapter
+            it.adapter = presenter.adapter
         }
         presenter.loadDataToAdapter()
     }
@@ -57,10 +57,11 @@ class LabelListFragment : MvpAppCompatFragment(), LabelListView, FragmentActionC
 
     override fun clickOnLabel(label: Label) {
         router.navigateTo(Screens.LabelScreen(label))
+        //navigationManager?.topNavigate(Screens.LabelScreen(label))
     }
 
     override fun updateList(labelList: List<Label>) {
-        adapter.updateList(labelList)
+        presenter.updateList(labelList)
     }
 
     override val action = MainAction(
@@ -70,42 +71,44 @@ class LabelListFragment : MvpAppCompatFragment(), LabelListView, FragmentActionC
             }
     )
 
-    inner class LabelListAdapter : BaseAdapter<Label>() {
-        override fun createDiffCallback(
+}
+
+class LabelListAdapter(private val presenter: LabelListPresenter) : BaseAdapter<Label>(), KoinComponent {
+    val router: Router by inject()
+
+    override fun createDiffCallback(
             oldList: List<Label>,
             newList: List<Label>
-        ): DiffCallback<Label> =
+    ): DiffCallback<Label> =
             object :
-                DiffCallback<Label>(oldList, newList) {
+                    DiffCallback<Label>(oldList, newList) {
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                    oldList[oldItemPosition].id == newList[newItemPosition].id
+                        oldList[oldItemPosition].id == newList[newItemPosition].id
 
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                    oldList[oldItemPosition].title == newList[newItemPosition].title ||
-                            oldList[oldItemPosition].difficulty == newList[newItemPosition].difficulty ||
-                            oldList[oldItemPosition].color == newList[newItemPosition].color
+                        oldList[oldItemPosition].title == newList[newItemPosition].title ||
+                                oldList[oldItemPosition].difficulty == newList[newItemPosition].difficulty ||
+                                oldList[oldItemPosition].color == newList[newItemPosition].color
             }
 
-        override fun onCreateViewHolder(
+    override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
-        ): BaseViewHolder<Label> =
+    ): BaseViewHolder<Label> =
             LabelViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_label, parent, false)
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_label, parent, false)
             )
 
-        inner class LabelViewHolder(private val view: View) :
+    inner class LabelViewHolder(private val view: View) :
             BaseViewHolder<Label>(view),
             KoinComponent {
-            override fun bind(data: Label) {
-                view.findViewById<ImageView>(R.id.image_itemLabel)?.imageTintList = ColorStateList.valueOf(data.color)
-                view.findViewById<TextView>(R.id.diff_itemLabel)?.text = data.difficulty.toString()
-                view.findViewById<TextView>(R.id.title_itemLabel)?.text = data.title
-                view.setOnClickListener {
-                    clickOnLabel(data)
-                }
+        override fun bind(data: Label) {
+            view.findViewById<ImageView>(R.id.image_itemLabel)?.imageTintList = ColorStateList.valueOf(data.color)
+            view.findViewById<TextView>(R.id.diff_itemLabel)?.text = data.difficulty.toString()
+            view.findViewById<TextView>(R.id.title_itemLabel)?.text = data.title
+            view.setOnClickListener {
+                router.navigateTo(Screens.LabelScreen(data))
             }
-
         }
 
     }

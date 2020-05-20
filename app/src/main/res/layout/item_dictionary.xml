@@ -1,47 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="horizontal"
+    tools:context=".fragments.dictionary.DictionaryItemFragmet"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data>
+    <!--<ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/ic_label"
+        android:tint="@{viewModel.labelColor}"
+        android:visibility="@{viewModel.labelVisible}" />-->
 
-        <variable
-            name="viewModel"
-            type="com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryItemViewModel" />
-
-        <import type="androidx.core.content.ContextCompat" />
-    </data>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/item_dictionary_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground"
-        android:onClick="@{() -> viewModel.openDictionary()}"
-        android:orientation="horizontal"
-        tools:context=".fragments.dictionary.DictionaryItemFragmet">
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        tools:text="Japan Dict 1 kyu" />
 
-        <!--<ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/ic_label"
-            android:tint="@{viewModel.labelColor}"
-            android:visibility="@{viewModel.labelVisible}" />-->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="@{viewModel.titleDictionary}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            tools:text="Japan Dict 1 kyu" />
-
-    </LinearLayout>
-</layout>
+</LinearLayout>

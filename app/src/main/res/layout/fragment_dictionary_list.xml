@@ -1,67 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.recyclerview.widget.RecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-        <import type="androidx.recyclerview.widget.DividerItemDecoration"/>
-        <variable
-            name="viewModel"
-            type="com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryListViewModel" />
-    </data>
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:elevation="8dp">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                app:layout_scrollFlags="snap|scroll|enterAlways"
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:fadingEdgeLength="10dp"
-                app:title="Dictionaries"
-                tools:title="Dictionaries"/>
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nestedScrollView"
-            android:fillViewport="true"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                app:adapter="@{viewModel.adapter}"
-                app:setItemDecoration="@{viewModel.decoration}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_dictionary" />
-
-        </androidx.core.widget.NestedScrollView>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="@{() -> viewModel.addDictionary()}"
-            app:layout_anchor="@id/nestedScrollView"
-            app:layout_anchorGravity="bottom|end"
-            app:srcCompat="@drawable/ic_add" />
-
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</layout>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recycler_dictionaryList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="never"
+    tools:listitem="@layout/item_dictionary" />

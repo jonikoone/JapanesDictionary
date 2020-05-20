@@ -53,7 +53,9 @@ class MainFragment : MvpAppCompatFragment(), MainView {
                         when (command) {
                             is Forward -> {
                                 val screen = command.screen as Screens
-                                presenter.addState(screen.getActionFragment())
+                                //Timber.d("MainFragment: Navigator implementation: screen: $screen")
+                                //presenter.addState(screen.getActionFragment())
+
                                 screen.fragment?.let {
                                     val containerId = mainHostFragment
                                     fm.beginTransaction()
@@ -82,6 +84,10 @@ class MainFragment : MvpAppCompatFragment(), MainView {
         }
     }
 
+    override fun navigate(screen: Screens) {
+        Timber.d("navigate to ${screen.screenKey}")
+        router.navigateTo(screen)
+    }
 
     override fun onResume() {
         super.onResume()
@@ -109,7 +115,8 @@ class MainFragment : MvpAppCompatFragment(), MainView {
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
         initClickListeners(view)
         initNavigationListener(view)
-        router.navigateTo(Screens.HomeScreen)
+        //presenter.navigate(Screens.HomeScreen)
+        presenter.navigateIfNeeded(Screens.HomeScreen)
     }
 
 
@@ -128,9 +135,9 @@ class MainFragment : MvpAppCompatFragment(), MainView {
         view.findViewById<NavigationView>(R.id.mainNavigation).setNavigationItemSelectedListener { item ->
             drawer.closeDrawer(GravityCompat.START)
             when (item.itemId) {
-                R.id.homeFragment -> router.navigateTo(Screens.HomeScreen)
-                R.id.labelListFragment -> router.navigateTo(Screens.LabelListScreen)
-                R.id.dictionariesFragment -> router.navigateTo(Screens.DictionaryListScreen())
+                R.id.homeFragment -> presenter.navigate(Screens.HomeScreen)
+                R.id.labelListFragment -> presenter.navigate(Screens.LabelListScreen)
+                R.id.dictionariesFragment -> presenter.navigate(Screens.DictionaryListScreen())
             }
             true
         }
@@ -149,26 +156,16 @@ class MainFragment : MvpAppCompatFragment(), MainView {
         else fab.hide()
     }
 
-    override fun setLayoutAnchor(id: Int) {
 
-    }
 
-    override fun setShowBottomAppBar(isShow: Boolean) {
-        val behavior = appBar.behavior as HideBottomViewOnScrollBehavior<BottomAppBar>
+    override fun bottomAppBar(isShow: Boolean) {
+        /*val behavior = appBar.behavior as HideBottomViewOnScrollBehavior<BottomAppBar>
         if (isShow) behavior.slideUp(appBar)
-        else behavior.slideDown(appBar)
+        else behavior.slideDown(appBar)*/
+        if (isShow) {
+            appBar.performShow()
+        } else
+            appBar.performHide()
     }
 
-    override fun applyChangeState() {
-        Timber.d("MainFragment: ApplyMainState")
-        presenter.state?.let {
-            setIconForFab(it.iconFab)
-            setShowFab(it.isShowFab)
-            setShowBottomAppBar(it.isShowBottomAppBar)
-            if (it.isShowAppBar) {
-                appBar.performShow()
-            } else
-                appBar.performHide()
-        }
-    }
 }

@@ -59,7 +59,7 @@ class LabelViewModel(private val labelDao: LabelDao, private var label: Label) :
     }
 
     val navigationBack = View.OnClickListener {
-        router.exit()
+        //router.exit()
     }
 
     val onClickStartIcon = View.OnClickListener {
