@@ -1,14 +1,16 @@
 package com.jonikoone.dictionaryforlearning.fragments
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.arellomobile.mvp.MvpAppCompatFragment
-import com.arellomobile.mvp.presenter.InjectPresenter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -17,14 +19,19 @@ import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.navigation.Screens
 import com.jonikoone.dictionaryforlearning.presentation.main.MainPresenter
 import com.jonikoone.dictionaryforlearning.presentation.main.MainView
+import com.jonikoone.dictionaryforlearning.util.BaseMvpFragment
+import moxy.presenter.InjectPresenter
 import org.koin.android.ext.android.inject
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
+import ru.terrakok.cicerone.android.pure.AppNavigator
+import ru.terrakok.cicerone.android.support.SupportAppNavigator
+import ru.terrakok.cicerone.android.support.SupportAppScreen
 import ru.terrakok.cicerone.commands.*
 import timber.log.Timber
 
-class MainFragment : MvpAppCompatFragment(), MainView {
+class MainFragment : BaseMvpFragment(), MainView {
 
     @InjectPresenter
     lateinit var presenter: MainPresenter
@@ -38,47 +45,34 @@ class MainFragment : MvpAppCompatFragment(), MainView {
     val navigatorHolder: NavigatorHolder by inject()
 
     private val navigator by lazy {
-        object : Navigator {
-            @IdRes
-            val mainHostFragment: Int = R.id.hostFragment
+        object : SupportAppNavigator(context as AppCompatActivity, childFragmentManager, R.id.hostFragment) {
+            override fun applyCommand(command: Command) {
+                super.applyCommand(command)
+                when (command) {
+                    is Forward -> {
+                        presenter.addState((command.screen as Screens).getActionFragment())
+                    }
+                    is Replace -> {
+                        presenter.addState((command.screen as Screens).getActionFragment())
+                    }
+                    is BackTo -> {
 
-            //val othersHostFragment: IntArray = intArrayOf(R.id.topHostFragment)
-            val fm = childFragmentManager
-
-            override fun applyCommands(commands: Array<out Command>) {
-                fm.executePendingTransactions()
-
-                for (command in commands) {
-                    try {
-                        when (command) {
-                            is Forward -> {
-                                val screen = command.screen as Screens
-                                //Timber.d("MainFragment: Navigator implementation: screen: $screen")
-                                //presenter.addState(screen.getActionFragment())
-
-                                screen.fragment?.let {
-                                    val containerId = mainHostFragment
-                                    fm.beginTransaction()
-                                            .replace(containerId, it)
-                                            .addToBackStack(screen.screenKey)
-                                            .commit()
-                                }
-                            }
-                            is Replace -> {
-                                //activityReplace(command)
-                            }
-                            is BackTo -> {
-                                //backTo(command)
-                            }
-                            is Back -> {
-                                presenter.removeLastState()
-                                fm.popBackStack()
-                            }
-                        }
-                    } catch (e: RuntimeException) {
-                        //errorOnApplyCommand(command, e)
+                    }
+                    is Back -> {
+                        presenter.removeLastState()
+                        fragmentManager.popBackStack()
                     }
                 }
+            }
+
+            override fun setupFragmentTransaction(
+                    command: Command,
+                    currentFragment: Fragment?,
+                    nextFragment: Fragment?,
+                    fragmentTransaction: FragmentTransaction
+            ) {
+                // Fix incorrect order lifecycle callback of MainFragment
+                fragmentTransaction.setReorderingAllowed(true)
             }
 
         }
@@ -112,13 +106,16 @@ class MainFragment : MvpAppCompatFragment(), MainView {
         fab = view.findViewById(R.id.mainFab)
         appBar = view.findViewById(R.id.bottomAppBar)
         //topHost = view.findViewById(R.id.topHostFragment)
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
+        //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
         initClickListeners(view)
         initNavigationListener(view)
+        if (savedInstanceState == null) {
+            router.navigateTo(Screens.HomeScreen)
+            presenter.applyState()
+        }
         //presenter.navigate(Screens.HomeScreen)
-        presenter.navigateIfNeeded(Screens.HomeScreen)
+        //presenter.navigateIfNeeded(Screens.HomeScreen)
     }
-
 
     fun initClickListeners(view: View) {
         appBar.setNavigationOnClickListener {
@@ -135,9 +132,9 @@ class MainFragment : MvpAppCompatFragment(), MainView {
         view.findViewById<NavigationView>(R.id.mainNavigation).setNavigationItemSelectedListener { item ->
             drawer.closeDrawer(GravityCompat.START)
             when (item.itemId) {
-                R.id.homeFragment -> presenter.navigate(Screens.HomeScreen)
-                R.id.labelListFragment -> presenter.navigate(Screens.LabelListScreen)
-                R.id.dictionariesFragment -> presenter.navigate(Screens.DictionaryListScreen())
+                R.id.homeFragment -> router.newRootScreen(Screens.HomeScreen)
+                R.id.labelListFragment -> router.newRootScreen(Screens.LabelListScreen)
+                R.id.dictionariesFragment -> router.newRootScreen(Screens.DictionaryListScreen())
             }
             true
         }

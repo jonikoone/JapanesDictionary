@@ -1,0 +1,20 @@
+Index: app/src/main/java/com/jonikoone/dictionaryforlearning/presentation/main/MainPresenter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.jonikoone.dictionaryforlearning.presentation.main\n\nimport android.view.View\nimport androidx.annotation.DrawableRes\nimport androidx.annotation.IdRes\nimport com.arellomobile.mvp.InjectViewState\nimport com.arellomobile.mvp.MvpPresenter\nimport com.google.android.material.navigation.NavigationView\nimport com.jonikoone.dictionaryforlearning.R\nimport com.jonikoone.dictionaryforlearning.fragments.home.HomeFragment\nimport com.jonikoone.dictionaryforlearning.navigation.Screens\nimport okhttp3.Route\nimport org.koin.core.KoinComponent\nimport org.koin.core.inject\nimport ru.terrakok.cicerone.Cicerone\nimport ru.terrakok.cicerone.Router\nimport timber.log.Timber\n\n@InjectViewState\nclass MainPresenter : MvpPresenter<MainView>(), KoinComponent {\n\n    val router: Router by inject()\n    val cicerone: Cicerone<Router> by inject()\n    var isNavigationOpen = false\n\n    var state: MainAction? = Screens.HomeScreen.getActionFragment()\n\n    init {\n        viewState.applyChangeState()\n    }\n\n    fun navigate(screen: Screens): Boolean {\n        state = screen.getActionFragment()\n        router.navigateTo(screen)\n        viewState.applyChangeState()\n        viewState.toggleNavigation(false)\n        return true\n    }\n\n    fun exit() {\n        \n    }\n\n    fun toggleNavigation(isToggle: Boolean) {\n        isNavigationOpen = isToggle\n        viewState.toggleNavigation(isNavigationOpen)\n    }\n\n    fun clickOnFab() {\n        state?.clickOnFab?.invoke()\n    }\n}\n\ndata class MainAction(\n    @DrawableRes val iconFab: Int = R.drawable.ic_add,\n    val isShowFab: Boolean = true,\n    val clickOnFab: (() -> Unit)? = null,\n    @IdRes val layoutAnchor: Int? = null,\n    val isShowBottomAppBar: Boolean = true\n)\n\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/jonikoone/dictionaryforlearning/presentation/main/MainPresenter.kt	(revision 7459f3fbbd4b3f76f6d16c18493e9998868429b8)
++++ app/src/main/java/com/jonikoone/dictionaryforlearning/presentation/main/MainPresenter.kt	(date 1589586835000)
+@@ -37,10 +37,6 @@
+         return true
+     }
+ 
+-    fun exit() {
+-        
+-    }
+-
+     fun toggleNavigation(isToggle: Boolean) {
+         isNavigationOpen = isToggle
+         viewState.toggleNavigation(isNavigationOpen)

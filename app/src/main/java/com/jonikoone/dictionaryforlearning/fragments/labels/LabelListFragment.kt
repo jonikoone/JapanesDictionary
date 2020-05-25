@@ -9,31 +9,31 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.arellomobile.mvp.MvpAppCompatFragment
-import com.arellomobile.mvp.presenter.InjectPresenter
 import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.navigation.FragmentActionContainer
 import com.jonikoone.dictionaryforlearning.navigation.Screens
 import com.jonikoone.dictionaryforlearning.presentation.label.LabelListPresenter
 import com.jonikoone.dictionaryforlearning.presentation.label.LabelListView
-import com.jonikoone.dictionaryforlearning.presentation.main.MainAction
-import com.jonikoone.dictionaryforlearning.presentation.main.MainPresenter
-import com.jonikoone.dictionaryforlearning.presentation.main.MainView
+import com.jonikoone.dictionaryforlearning.presentation.main.MainState
 import com.jonikoone.dictionaryforlearning.util.BaseAdapter
+import com.jonikoone.dictionaryforlearning.util.BaseMvpFragment
 import com.jonikoone.dictionaryforlearning.util.DiffCallback
+import moxy.presenter.InjectPresenter
 import org.koin.android.ext.android.inject
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 import ru.terrakok.cicerone.Router
-import timber.log.Timber
 
-class LabelListFragment : MvpAppCompatFragment(), LabelListView, FragmentActionContainer {
+class LabelListFragment : BaseMvpFragment(), LabelListView, FragmentActionContainer {
 
     @InjectPresenter
     lateinit var presenter: LabelListPresenter
 
     val router: Router by inject()
+
+    val adapter: LabelListAdapter by lazy {
+        LabelListAdapter(presenter, router)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,35 +46,25 @@ class LabelListFragment : MvpAppCompatFragment(), LabelListView, FragmentActionC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<RecyclerView>(R.id.recycler_labelList)?.let {
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            it.adapter = presenter.adapter
+            it.adapter = adapter
         }
-        presenter.loadDataToAdapter()
-    }
-
-    override fun clickOnAddLabel() {
-        presenter.addLabel()
-    }
-
-    override fun clickOnLabel(label: Label) {
-        router.navigateTo(Screens.LabelScreen(label))
-        //navigationManager?.topNavigate(Screens.LabelScreen(label))
     }
 
     override fun updateList(labelList: List<Label>) {
-        presenter.updateList(labelList)
+        adapter.updateList(labelList)
     }
 
-    override val action = MainAction(
+    override val state = MainState(
             iconFab = R.drawable.ic_add,
             clickOnFab = {
-                clickOnAddLabel()
+                presenter.addLabel()
             }
     )
 
 }
 
-class LabelListAdapter(private val presenter: LabelListPresenter) : BaseAdapter<Label>(), KoinComponent {
-    val router: Router by inject()
+class LabelListAdapter(private val presenter: LabelListPresenter, val router: Router)
+    : BaseAdapter<Label>(), KoinComponent {
 
     override fun createDiffCallback(
             oldList: List<Label>,
@@ -107,7 +97,7 @@ class LabelListAdapter(private val presenter: LabelListPresenter) : BaseAdapter<
             view.findViewById<TextView>(R.id.diff_itemLabel)?.text = data.difficulty.toString()
             view.findViewById<TextView>(R.id.title_itemLabel)?.text = data.title
             view.setOnClickListener {
-                router.navigateTo(Screens.LabelScreen(data))
+                router.navigateTo(Screens.LabelScreen(data.id))
             }
         }
 

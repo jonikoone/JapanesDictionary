@@ -2,19 +2,8 @@ package com.jonikoone.dictionaryforlearning.di
 
 import androidx.room.Room
 import com.jonikoone.databasemodule.database.AppDatabase
-import com.jonikoone.databasemodule.database.entites.Dictionary
-import com.jonikoone.databasemodule.database.entites.Label
-import com.jonikoone.databasemodule.database.entites.Word
-import com.jonikoone.dictionaryforlearning.viewmodels.common.MainFragmentViewModel
-import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryItemViewModel
-import com.jonikoone.dictionaryforlearning.viewmodels.dictionary.DictionaryEditViewModel
-import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelItemViewModel
-import com.jonikoone.dictionaryforlearning.viewmodels.labels.LabelViewModel
-import com.jonikoone.dictionaryforlearning.viewmodels.words.WordItemViewModel
-import com.jonikoone.dictionaryforlearning.viewmodels.words.WordViewModel
-import com.jonikoone.dictionaryforlearning.viewmodels.words.WordsListViewModel
+import com.jonikoone.dictionaryforlearning.TestPresenter
 import org.koin.android.ext.koin.androidApplication
-import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import ru.terrakok.cicerone.Cicerone
 
@@ -33,6 +22,7 @@ val appModule = module {
     single { cicerone.router }
     single { cicerone.navigatorHolder }
 
+    single { TestPresenter() }
 
     /*//view models
     //main fragment

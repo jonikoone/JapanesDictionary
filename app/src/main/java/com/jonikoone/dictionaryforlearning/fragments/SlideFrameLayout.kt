@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.FrameLayout
-import androidx.fragment.app.Fragment
-import com.arellomobile.mvp.MvpAppCompatFragment
 import timber.log.Timber
 
 

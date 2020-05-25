@@ -32,10 +32,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    android.buildFeatures {
-        dataBinding = true
-    }
-
 
     configurations.all() {
         resolutionStrategy.force "org.antlr:antlr4-runtime:4.5.3"
@@ -47,6 +43,7 @@ dependencies {
     def nav_version = "2.3.0-alpha05"
     def koin_version = '2.0.1'
     def room_version = "2.2.5"
+    def moxy_version = '2.1.2'
 
     implementation project(":databaseModule")
 
@@ -62,16 +59,12 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
-    kapt 'com.android.databinding:compiler:3.2.1'
-
-    //mvp for X
-    implementation 'tech.schoolhelper:moxy-x:1.7.0'
-    implementation 'tech.schoolhelper:moxy-x-androidx:1.7.0'
-    kapt 'tech.schoolhelper:moxy-x-compiler:1.7.0'
-
     //mvp
-    //implementation 'com.arello-mobile:moxy-android:1.5.5'
-    //kapt 'com.arello-mobile:moxy-compiler:1.5.5'
+    implementation "com.github.moxy-community:moxy:$moxy_version"
+    implementation "com.github.moxy-community:moxy-androidx:$moxy_version"
+    implementation "com.github.moxy-community:moxy-ktx:$moxy_version"
+    implementation "com.github.moxy-community:moxy-material:$moxy_version"
+    kapt "com.github.moxy-community:moxy-compiler:$moxy_version"
 
     //networking
     implementation 'com.squareup.okhttp3:okhttp:4.4.1'

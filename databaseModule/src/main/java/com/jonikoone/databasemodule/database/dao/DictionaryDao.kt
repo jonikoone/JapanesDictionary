@@ -5,7 +5,6 @@ import androidx.room.*
 import com.jonikoone.databasemodule.database.entites.Dictionary
 import com.jonikoone.databasemodule.database.entites.DictionaryWithLabel
 import com.jonikoone.databasemodule.database.entites.DictionaryWithWords
-import com.jonikoone.databasemodule.database.entites.Word
 
 @Dao
 interface DictionaryDao : BaseDao<Dictionary> {
@@ -37,7 +36,10 @@ interface DictionaryDao : BaseDao<Dictionary> {
     fun getDictionaryWithWords(dictionaryId: Long): LiveData<DictionaryWithWords>
 
 
-
+    @Transaction
+    fun insertAndGet(dictionary: Dictionary): Dictionary {
+        return getDictionaryItem(insert(dictionary))
+    }
 
 
 }

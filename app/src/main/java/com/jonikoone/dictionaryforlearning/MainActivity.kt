@@ -2,10 +2,13 @@ package com.jonikoone.dictionaryforlearning
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.jonikoone.dictionaryforlearning.fragments.MainFragment
+import moxy.MvpAppCompatActivity
 import org.koin.android.ext.android.inject
 import ru.terrakok.cicerone.Router
+import timber.log.Timber
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : MvpAppCompatActivity(){
 
     private val router: Router by inject()
     /*
@@ -21,10 +24,11 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        supportFragmentManager.beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.mainFragmentContainer, TestMoxyFragment())
-                .commit()
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.mainFragmentContainer, MainFragment())
+                    .commit()
+        }
         //router.newRootScreen(Screens.HomeScreen)
     }
 
@@ -38,6 +42,10 @@ class MainActivity : AppCompatActivity(){
         navigationHolder.removeNavigator()
     }*/
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.d("$TAG onDestroyActivity $this")
+    }
 
     override fun onBackPressed() {
         router.exit()

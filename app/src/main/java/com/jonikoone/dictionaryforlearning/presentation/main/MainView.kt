@@ -2,13 +2,14 @@ package com.jonikoone.dictionaryforlearning.presentation.main
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.AddToEndStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.jonikoone.dictionaryforlearning.navigation.Screens
+import moxy.MvpView
+import moxy.viewstate.strategy.AddToEndSingleStrategy
+import moxy.viewstate.strategy.AddToEndStrategy
+import moxy.viewstate.strategy.StateStrategyType
 
 // описываются экшены которые точно описаны в активити
+@StateStrategyType(AddToEndSingleStrategy::class)
 interface MainView : MvpView {
 
     fun setIconForFab(@DrawableRes id: Int)
@@ -19,6 +20,5 @@ interface MainView : MvpView {
 
     fun bottomAppBar(isShow: Boolean)
 
-    @StateStrategyType(value = AddToEndStrategy::class)
     fun navigate(screen: Screens)
 }

@@ -1,8 +1,6 @@
 package com.jonikoone.dictionaryforlearning.util
 
 import android.view.View
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -36,10 +34,7 @@ abstract class BaseAdapter<T> :
         holder.bind(list[position])
     }
 
-    abstract class BaseViewHolder<T> : RecyclerView.ViewHolder {
-        constructor(itemView: View) : super(itemView)
-        constructor(binding: ViewDataBinding) : super(binding.root)
-
+    abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
         open fun bind(data: T){}
         open fun bind(data: T, isActivate: Boolean = false){}
     }

@@ -8,7 +8,9 @@
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
     tools:context=".fragments.dictionary.DictionaryItemFragmet"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemDictionary_linear_clickItem"
+    >
 
     <!--<ImageView
         android:layout_width="wrap_content"
@@ -21,7 +23,7 @@
         android:visibility="@{viewModel.labelVisible}" />-->
 
     <TextView
-        android:id="@+id/item_dictionary_title_text_view"
+        android:id="@+id/itemDictionary_textView_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -1,6 +1,5 @@
 package com.jonikoone.dictionaryforlearning.fragments.labels
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,32 +8,43 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import com.arellomobile.mvp.MvpAppCompatFragment
-import com.arellomobile.mvp.presenter.InjectPresenter
+import androidx.core.os.bundleOf
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.jonikoone.databasemodule.database.entites.Label
+import com.jonikoone.databasemodule.database.dao.LabelDao
 import com.jonikoone.dictionaryforlearning.R
-import com.jonikoone.dictionaryforlearning.fragments.SlideFrameLayout
 import com.jonikoone.dictionaryforlearning.navigation.FragmentActionContainer
 import com.jonikoone.dictionaryforlearning.presentation.label.LabelPresenter
 import com.jonikoone.dictionaryforlearning.presentation.label.LabelView
-import com.jonikoone.dictionaryforlearning.presentation.main.MainAction
+import com.jonikoone.dictionaryforlearning.presentation.main.MainState
+import com.jonikoone.dictionaryforlearning.util.BaseMvpFragment
+import com.jonikoone.dictionaryforlearning.util.colorStatelistOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import moxy.presenter.InjectPresenter
 import org.koin.android.ext.android.inject
 import ru.terrakok.cicerone.Router
 import timber.log.Timber
 
-class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), LabelView,
+class LabelFragment() : BaseMvpFragment(), LabelView,
         FragmentActionContainer {
 
+    val labelDao: LabelDao by inject()
+
+    val labelId: Long by lazy { arguments?.getLong(ARG_LABELID) as Long }
+
+    companion object {
+        val ARG_LABELID = "${this::class.qualifiedName}::labelId"
+        fun getInstance(labelId: Long) = LabelFragment().apply {
+            arguments = bundleOf(ARG_LABELID to labelId)
+        }
+    }
 
     @InjectPresenter
     lateinit var presenter: LabelPresenter
+
+    fun provigePresenter() = LabelPresenter(labelDao, labelId)
 
     val router: Router by inject()
 
@@ -42,14 +52,6 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
     lateinit var titleEditText: TextInputEditText
     lateinit var difficultyTitle: TextView
     lateinit var seekBar: SeekBar
-
-    private val colorLabel = MutableLiveData<Label>(editableLabel).apply {
-        observe(this@LabelFragment,
-                Observer<Label> {
-                    editableLabel = it
-                    updateLabelColor()
-                })
-    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -66,35 +68,26 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
         seekBar = view.findViewById(R.id.diffuculty_seekBar_label)
 
         initListeners(view)
-        updateAll()
-    }
-
-    fun updateAll() {
-        updateLabelTitle()
-        updateLabelColor()
-        updateLabelDifficulty()
-        updateLabelDifficultySeek()
+        labelId?.let {
+            presenter.loadLabel(it)
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        presenter.updateLabel(editableLabel)
         Timber.d("LabelFragment:onPause")
     }
 
     fun initListeners(view: View) {
-        textInputLayput.let {
-
-            it.setStartIconOnClickListener {
-                ColorPickerBottomSheetFragmentWithDismissCallback(editableLabel) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        editableLabel = presenter.reloadLabel(editableLabel.id)
-                        updateLabelColor()
-                    }
+        textInputLayput.setStartIconOnClickListener {
+            ColorPickerBottomSheetFragment() { color ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    presenter.updateColor(color)
                 }
-                        .show(childFragmentManager, "colorBottomSheetDialog")
             }
+                    .show(childFragmentManager, "colorBottomSheetDialog")
         }
+
 
         titleEditText.addTextChangedListener(
                 object : TextWatcher {
@@ -109,8 +102,7 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
                     }
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        editableLabel = editableLabel.copy(title = s.toString())
-                        updateShowError()
+                        presenter.updateTitle(s.toString())
                     }
                 }
         )
@@ -121,8 +113,7 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
                     progress: Int,
                     fromUser: Boolean
             ) {
-                editableLabel = editableLabel.copy(difficulty = progress)
-                updateLabelDifficulty()
+                presenter.updateDifficulty(progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -130,35 +121,26 @@ class LabelFragment(private var editableLabel: Label) : MvpAppCompatFragment(), 
         })
     }
 
-    override fun updateLabelTitle() {
-        titleEditText.setText(editableLabel.title.toCharArray(), 0, editableLabel.title.length)
+    override fun updateLabelTitle(title: String) {
+        val chars = title.toCharArray()
+        titleEditText.setText(chars, 0, chars.size)
     }
 
-    override fun updateLabelColor() {
-        textInputLayput.setStartIconTintList(
-                ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(editableLabel.color))
-        )
+    override fun updateLabelColor(color: Int) {
+        textInputLayput.setStartIconTintList(colorStatelistOf(color))
     }
 
-    override fun updateLabelDifficulty() {
-        difficultyTitle.text = "Difficulty: ${editableLabel.difficulty}"
+    override fun updateLabelDifficulty(difficulty: Int) {
+        seekBar.progress = difficulty
     }
 
-    override fun updateLabelDifficultySeek() {
-        seekBar.progress = editableLabel.difficulty
+    override fun updateLabelDifficultyText(difficulty: Int) {
+        difficultyTitle.text = "Difficulty: $difficulty"
     }
 
-    override fun updateShowError() {
-        textInputLayput.error =
-                if (editableLabel.title.isEmpty())
-                    "label should have a title!"
-                else null
-    }
-
-    override val action = MainAction(
+    override val state = MainState(
             isShowAppBar = false,
             isShowFab = false
     )
 
 }
-

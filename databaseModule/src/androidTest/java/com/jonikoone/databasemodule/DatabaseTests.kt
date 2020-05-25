@@ -12,9 +12,7 @@ import com.jonikoone.databasemodule.database.dao.WordDao
 import com.jonikoone.databasemodule.database.entites.Dictionary
 import com.jonikoone.databasemodule.database.entites.Label
 import com.jonikoone.databasemodule.database.entites.Word
-import com.jonikoone.databasemodule.database.entites.WordStatistic
 import com.jraska.livedata.test
-import kotlinx.coroutines.awaitAll
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

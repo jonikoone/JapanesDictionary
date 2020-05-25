@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <ImageButton
+            android:id="@+id/cancelChange_imageButton_colorBottomSheet"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="end"
+            android:background="#00000000"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_close" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="56dp"
+            android:layout_marginEnd="56dp"
+            android:ellipsize="end"
+            android:gravity="center|start"
+            android:text="Choose label for your dictionary"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Button" />
+
+        <ImageButton
+            android:id="@+id/applyChange_imageButton_colorBottomSheet"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="start"
+            android:background="#00000000"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_apply"
+            android:tint="@color/colorPrimaryDark" />
+
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/labelPicker_recycler_labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        tools:listitem="@layout/item_label"/>
+
+
+</LinearLayout>

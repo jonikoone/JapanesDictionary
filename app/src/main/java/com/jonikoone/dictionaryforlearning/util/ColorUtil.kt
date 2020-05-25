@@ -1,5 +1,7 @@
 package com.jonikoone.dictionaryforlearning.util
 
+import android.content.res.ColorStateList
+
 fun Int.replaceColor(mask: Int, colorItem: Int, shiftLeft: Int) =
     (this and mask) or (colorItem shl shiftLeft)
 
@@ -15,3 +17,6 @@ fun Int.replaceBlue(colorItem: Int) =
 fun Int.getColorRed() = (this shr 16) and 0xff
 fun Int.getColorGreen() = (this shr 8) and 0xff
 fun Int.getColorBlue() = this and 0xff
+
+
+fun colorStatelistOf(color: Int) = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(color))

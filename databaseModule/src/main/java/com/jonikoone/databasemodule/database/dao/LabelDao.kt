@@ -17,5 +17,18 @@ interface LabelDao : BaseDao<Label>{
     @Query(value = "select * from labels where id_label = :idLabel")
     fun getLabel(idLabel: Long) : Label
 
+    @Transaction
+    fun updateAndGet(label: Label) : Label {
+        update(label)
+        return getLabel(label.id)
+    }
+
+    @Transaction
+    fun insertAndGet(label: Label) : Label {
+        return getLabel(insert(label))
+    }
+
+
+
 }
 
