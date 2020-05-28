@@ -18,11 +18,13 @@ import com.jonikoone.dictionaryforlearning.presentation.label.LabelPresenter
 import com.jonikoone.dictionaryforlearning.presentation.label.LabelView
 import com.jonikoone.dictionaryforlearning.presentation.main.MainState
 import com.jonikoone.dictionaryforlearning.util.BaseMvpFragment
+import com.jonikoone.dictionaryforlearning.util.SimpleTextWatcher
 import com.jonikoone.dictionaryforlearning.util.colorStatelistOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import org.koin.android.ext.android.inject
 import ru.terrakok.cicerone.Router
 import timber.log.Timber
@@ -44,6 +46,7 @@ class LabelFragment() : BaseMvpFragment(), LabelView,
     @InjectPresenter
     lateinit var presenter: LabelPresenter
 
+    @ProvidePresenter
     fun provigePresenter() = LabelPresenter(labelDao, labelId)
 
     val router: Router by inject()
@@ -90,17 +93,7 @@ class LabelFragment() : BaseMvpFragment(), LabelView,
 
 
         titleEditText.addTextChangedListener(
-                object : TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {}
-
-                    override fun beforeTextChanged(
-                            s: CharSequence?,
-                            start: Int,
-                            count: Int,
-                            after: Int
-                    ) {
-                    }
-
+                object : SimpleTextWatcher {
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                         presenter.updateTitle(s.toString())
                     }

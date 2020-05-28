@@ -18,6 +18,7 @@ import moxy.presenterScope
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import ru.terrakok.cicerone.Router
+import timber.log.Timber
 
 @InjectViewState
 class LabelListPresenter : BasePresenter<LabelListView>(), KoinComponent {
@@ -29,6 +30,7 @@ class LabelListPresenter : BasePresenter<LabelListView>(), KoinComponent {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         labeles = labelDao.getLabels().apply {
+            Timber.d("live data update: labels = $this")
             observeForever { data ->
                 viewState.updateList(data)
             }

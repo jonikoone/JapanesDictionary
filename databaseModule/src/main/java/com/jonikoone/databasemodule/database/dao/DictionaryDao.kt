@@ -5,21 +5,24 @@ import androidx.room.*
 import com.jonikoone.databasemodule.database.entites.Dictionary
 import com.jonikoone.databasemodule.database.entites.DictionaryWithLabel
 import com.jonikoone.databasemodule.database.entites.DictionaryWithWords
+import com.jonikoone.databasemodule.database.entites.Label
 
 @Dao
 interface DictionaryDao : BaseDao<Dictionary> {
 
     @Query(value = "select * from dictionaries")
-    fun getDictionaries(): LiveData<List<Dictionary>>
+    fun getDictionariesLive(): LiveData<List<Dictionary>>
+
+    @Query(value = "select * from dictionaries")
+    fun getDictionariesList(): List<Dictionary>
 
     @Query(value = "select * from dictionaries where id_dictionary = :dictionaryId")
     fun getDictionaryItem(dictionaryId: Long): Dictionary
 
-
     // with label
     @Transaction
     @Query(value = "select * from dictionaries")
-    fun getDictionariesWithLabel(): LiveData<List<DictionaryWithLabel>>
+    fun getDictionariesWithLabelAsLive(): LiveData<List<DictionaryWithLabel>>
 
     @Transaction
     @Query(value = "select * from dictionaries where id_dictionary = :dictionaryId")
@@ -40,6 +43,7 @@ interface DictionaryDao : BaseDao<Dictionary> {
     fun insertAndGet(dictionary: Dictionary): Dictionary {
         return getDictionaryItem(insert(dictionary))
     }
+
 
 
 }

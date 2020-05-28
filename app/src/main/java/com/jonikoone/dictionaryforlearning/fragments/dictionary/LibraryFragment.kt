@@ -4,23 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jonikoone.databasemodule.database.dao.DictionaryDao
+import com.jonikoone.databasemodule.database.dao.DictionaryWithLabelDao
 import com.jonikoone.databasemodule.database.entites.Dictionary
+import com.jonikoone.databasemodule.database.entites.DictionaryWithLabel
 import com.jonikoone.dictionaryforlearning.R
 import com.jonikoone.dictionaryforlearning.navigation.FragmentActionContainer
 import com.jonikoone.dictionaryforlearning.navigation.Screens
 import com.jonikoone.dictionaryforlearning.presentation.main.MainState
-import com.jonikoone.dictionaryforlearning.util.BaseAdapter
-import com.jonikoone.dictionaryforlearning.util.BaseMvpFragment
-import com.jonikoone.dictionaryforlearning.util.BasePresenter
-import com.jonikoone.dictionaryforlearning.util.DiffCallback
+import com.jonikoone.dictionaryforlearning.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,17 +32,22 @@ import moxy.viewstate.strategy.StateStrategyType
 import org.koin.android.ext.android.inject
 import org.koin.core.KoinComponent
 import ru.terrakok.cicerone.Router
+import timber.log.Timber
 
 class LibraryFragment : BaseMvpFragment(), LibraryView, FragmentActionContainer {
 
     val router: Router by inject()
     val dictionaryDao: DictionaryDao by inject()
+    val dictionaryWithLabelDao: DictionaryWithLabelDao by inject()
 
     @InjectPresenter
     lateinit var presenter: LibraryPresenter
 
     @ProvidePresenter
-    fun providePresenter() = LibraryPresenter(dictionaryDao, router)
+    fun providePresenter() = LibraryPresenter(
+        dictionaryWithLabelDao = dictionaryWithLabelDao,
+        dictionaryDao = dictionaryDao, router = router
+    )
 
 
     lateinit var recyclerViewListDictionaries: RecyclerView
@@ -52,6 +55,16 @@ class LibraryFragment : BaseMvpFragment(), LibraryView, FragmentActionContainer 
 
     val adapter: LibraryAdapter by lazy {
         LibraryAdapter(presenter, router)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(presenter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycle.removeObserver(presenter)
     }
 
     override fun onCreateView(
@@ -64,12 +77,13 @@ class LibraryFragment : BaseMvpFragment(), LibraryView, FragmentActionContainer 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerViewListDictionaries = view.findViewById(R.id.recycler_dictionaryList)
-        recyclerViewListDictionaries.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerViewListDictionaries.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerViewListDictionaries.adapter = adapter
         constraintLayoutEmptyList = view.findViewById(R.id.library_relative_noDataLayout)
     }
 
-    override fun updateList(dictionaries: List<Dictionary>) {
+    override fun updateList(dictionaries: List<DictionaryWithLabel>) {
         adapter.updateList(dictionaries)
     }
 
@@ -81,19 +95,22 @@ class LibraryFragment : BaseMvpFragment(), LibraryView, FragmentActionContainer 
     }
 
     override val state: MainState = MainState(
-            isShowFab = true,
-            iconFab = R.drawable.ic_add,
-            clickOnFab = {
-                presenter.addDictionary()
-            }
+        isShowFab = true,
+        iconFab = R.drawable.ic_add,
+        clickOnFab = {
+            presenter.addDictionary()
+        }
     )
 
 }
 
-class LibraryAdapter(private val presenter: LibraryPresenter, val router: Router)
-    : BaseAdapter<Dictionary>(), KoinComponent {
-    override fun createDiffCallback(oldList: List<Dictionary>, newList: List<Dictionary>): DiffCallback<Dictionary> {
-        return object : DiffCallback<Dictionary>(oldList, newList) {
+class LibraryAdapter(private val presenter: LibraryPresenter, val router: Router) :
+    BaseAdapter<DictionaryWithLabel>(), KoinComponent {
+    override fun createDiffCallback(
+        oldList: List<DictionaryWithLabel>,
+        newList: List<DictionaryWithLabel>
+    ): DiffCallback<DictionaryWithLabel> {
+        return object : DiffCallback<DictionaryWithLabel>(oldList, newList) {
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                 return oldList[oldItemPosition] === newList[newItemPosition]
             }
@@ -104,40 +121,75 @@ class LibraryAdapter(private val presenter: LibraryPresenter, val router: Router
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<Dictionary> {
-        return DictionaryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_dictionary, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
+            : BaseViewHolder<DictionaryWithLabel> {
+        Timber.d("create view holder with viewType: $viewType")
+        return DictionaryItemWithLabelViewHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_dictionary_with_label, parent, false)
+        )
+
     }
 
-    inner class DictionaryViewHolder(itemView: View) : BaseViewHolder<Dictionary>(itemView){
-        override fun bind(data: Dictionary) {
-            itemView.findViewById<TextView>(R.id.itemDictionary_textView_title).text = data.title
-            itemView.findViewById<LinearLayout>(R.id.itemDictionary_linear_clickItem).apply {
-                setOnClickListener {
-                    router.navigateTo(Screens.WordsListScreen(data.id))
-                }
-                setOnLongClickListener {
-                    router.navigateTo(Screens.DictionaryEditScreen(data.id))
-                    true
-                }
+    fun setListenersForRouting(view: View, id: Long) {
+        Timber.d("listener open dict by id: $id")
+        view.findViewById<View>(R.id.itemDictionary_itemClick).apply {
+            setOnClickListener {
+                router.navigateTo(Screens.WordsListScreen(id))
             }
+            setOnLongClickListener {
+                router.navigateTo(Screens.DictionaryEditScreen(id))
+                true
+            }
+        }
+
+    }
+
+    inner class DictionaryItemWithLabelViewHolder(itemView: View) :
+        BaseViewHolder<DictionaryWithLabel>(itemView) {
+        private val dictionaryTitle = itemView.findViewById<TextView>(R.id.itemDictionary_textView_dictionaryTitle)
+        private val labelContainer = itemView.findViewById<View>(R.id.itemDictionary_labelContainer)
+        private val labelIcon = itemView.findViewById<ImageView>(R.id.itemDictionary_imageView_labelIcon)
+        private val labelDiffiuculty = itemView.findViewById<TextView>(R.id.itemDictionary_textView_labelDifficulty)
+        private val labelTitle = itemView.findViewById<TextView>(R.id.itemDictionary_textView_labelTitle)
+
+        override fun bind(data: DictionaryWithLabel) {
+            Timber.d("dictionary with label item: $data")
+            dictionaryTitle.text = data.dictionary.title
+            labelContainer.visibility = if (data.dictionary.labelId == null) View.GONE else View.VISIBLE
+            data.label?.let { label ->
+                labelIcon.imageTintList = colorStatelistOf(label.color)
+                labelDiffiuculty.text = label.difficulty.toString()
+                labelTitle.text = label.title
+            }
+            setListenersForRouting(itemView, data.dictionary.id)
         }
     }
 }
 
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface LibraryView : MvpView {
-    fun updateList(dictionaries: List<Dictionary>)
+    fun updateList(dictionaries: List<DictionaryWithLabel>)
     fun updateStatusList(sizeList: Int)
 }
 
 @InjectViewState
-class LibraryPresenter(val dictionaryDao: DictionaryDao, val router: Router)
-    : BasePresenter<LibraryView>() {
+class LibraryPresenter(
+    val dictionaryWithLabelDao: DictionaryWithLabelDao,
+    val dictionaryDao: DictionaryDao, val router: Router
+) :
+    BasePresenter<LibraryView>(), LifecycleObserver {
 
-    private val listDictionaries: LiveData<List<Dictionary>> = MutableLiveData<List<Dictionary>>().apply {
-        observeForever {
-            viewState.updateList(it)
-            viewState.updateStatusList(it.size)
+    private lateinit var listDictionaries: LiveData<List<DictionaryWithLabel>>
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        listDictionaries = dictionaryDao.getDictionariesWithLabelAsLive().apply {
+            observeForever {
+                Timber.d("live data update: list = $it")
+                viewState.updateList(it)
+                viewState.updateStatusList(it.size)
+            }
         }
     }
 

@@ -1,12 +1,14 @@
 package com.jonikoone.databasemodule
 
 import android.content.Context
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.jonikoone.databasemodule.database.AppDatabase
 import com.jonikoone.databasemodule.database.dao.DictionaryDao
+import com.jonikoone.databasemodule.database.dao.DictionaryWithLabelDao
 import com.jonikoone.databasemodule.database.dao.LabelDao
 import com.jonikoone.databasemodule.database.dao.WordDao
 import com.jonikoone.databasemodule.database.entites.Dictionary
@@ -18,16 +20,20 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import java.io.IOException
+import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 class DatabaseTests {
 
-    @get:Rule val rule = InstantTaskExecutorRule()
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
     private lateinit var labelDao: LabelDao
     private lateinit var dictionaryDao: DictionaryDao
+    private lateinit var dictionaryWithLabelDao: DictionaryWithLabelDao
     private lateinit var wordDao: WordDao
 
     private lateinit var db: AppDatabase
@@ -36,9 +42,11 @@ class DatabaseTests {
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(
-                context, AppDatabase::class.java).build()
+            context, AppDatabase::class.java
+        ).build()
         labelDao = db.getLabelDao()
         dictionaryDao = db.getDictionaryDao()
+        dictionaryWithLabelDao = db.getDictionaryWithLabelDao()
         wordDao = db.getWordDao()
     }
 
@@ -62,26 +70,38 @@ class DatabaseTests {
     @Test
     @Throws(Exception::class)
     fun writeDictionaryWithLabel() {
-        val newLabel = mock(Label::class.java)
-        `when`(newLabel.title).thenReturn("label for dict")
-        val idLabel = labelDao.insert(newLabel)
+        fun createFakeLabel(count: Int = 1): Long{
+            for (i in 0..count) {
+                val l = mock(Label::class.java)
+                `when`(l.title).thenReturn("fake $i label")
+                labelDao.insert(l)
+            }
+            return Random(1).nextLong(count.toLong())
+        }
 
-        val newDict = mock(Dictionary::class.java)
-        `when`(newDict.title).thenReturn("test dict")
-        `when`(newDict.labelId).thenReturn(idLabel)
+        val labelId = createFakeLabel(10)
 
-        val idDict = dictionaryDao.insert(newDict)
+        val newDict1 = mock(Dictionary::class.java)
+        `when`(newDict1.title).thenReturn("test dict 1")
+        `when`(newDict1.labelId).thenReturn(labelId)
 
-        dictionaryDao.getDictionariesWithLabel().test()
-                .awaitValue()
-                .assertHasValue()
-                .assertValue { it.count() == 1 }
+        val newDict2 = mock(Dictionary::class.java)
+        `when`(newDict2.title).thenReturn("test dict 2")
+        `when`(newDict2.labelId).thenReturn(labelId)
 
-        dictionaryDao.getDictionaryWithLabelItem(idDict).test()
-                .awaitValue()
-                .assertHasValue()
-                .assertValue { it.label?.title == newLabel.title }
-                .assertValue { it.dictionary.title == newDict.title }
+        val idDict1 = dictionaryDao.insert(newDict1)
+        val idDict2 = dictionaryDao.insert(newDict2)
+
+        val dicts = dictionaryDao.getDictionariesWithLabelAsLive().test()
+            .awaitValue()
+            .assertHasValue()
+            .assertValue {list ->
+                list.forEach {
+                    if (it.label == null) return@assertValue false
+                }
+                true
+            }
+
     }
 
     @Test
@@ -92,15 +112,8 @@ class DatabaseTests {
 
         val idDict = dictionaryDao.insert(newDict)
 
-        dictionaryDao.getDictionariesWithLabel().test()
-                .awaitValue()
-                .assertHasValue()
-                .assertValue { it.count() == 1 }
-
-        dictionaryDao.getDictionaryWithLabelItem(idDict).test()
-                .awaitValue()
-                .assertHasValue()
-                .assertValue { it.label == null }
+        assert(dictionaryWithLabelDao.getDictionariesAsList().size == 1)
+        //assert(dictionaryWithLabelDao.getDictionaryWithLabel(idDict).label == null)
     }
 
     @Test
@@ -111,10 +124,10 @@ class DatabaseTests {
         val idDict = dictionaryDao.insert(newDict)
 
         dictionaryDao.getDictionaryWithWords(idDict).test()
-                .awaitValue()
-                .assertHasValue()
-                .assertValue { it.dictionary.title == newDict.title }
-                .assertValue { it.words.isEmpty() }
+            .awaitValue()
+            .assertHasValue()
+            .assertValue { it.dictionary.title == newDict.title }
+            .assertValue { it.words.isEmpty() }
 
         val newWord = mock(Word::class.java)
         `when`(newWord.word).thenReturn("str1")
@@ -125,11 +138,11 @@ class DatabaseTests {
         wordDao.insert(newWord)
 
         dictionaryDao.getDictionaryWithWords(idDict).test()
-                .awaitValue()
-                .assertHasValue()
-                .assertValue { it.dictionary.title == newDict.title }
-                .assertValue { it.words.isNotEmpty() }
-                .assertValue { it.words.first().word == newWord.word }
+            .awaitValue()
+            .assertHasValue()
+            .assertValue { it.dictionary.title == newDict.title }
+            .assertValue { it.words.isNotEmpty() }
+            .assertValue { it.words.first().word == newWord.word }
     }
 
 
@@ -149,22 +162,22 @@ class DatabaseTests {
         val idWord = wordDao.createWordWithStatistic(newWord)
 
         wordDao.getWordWithStatisticById(idWord).test()
-                .awaitValue()
-                .assertHasValue()
-                .assertValue { it.statistic != null }
-                .assertValue { it.statistic?.countFail == 0 }
+            .awaitValue()
+            .assertHasValue()
+            .assertValue { it.statistic != null }
+            .assertValue { it.statistic?.countFail == 0 }
 
         val statistic = wordDao.getStatisticByWordId(idWord).test()
-                .awaitValue()
-                .assertHasValue()
-                .value()
+            .awaitValue()
+            .assertHasValue()
+            .value()
 
         wordDao.update(statistic.copy(countRepeat = 10, countFail = 5))
 
         wordDao.getStatisticByWordId(idWord).test()
-                .awaitValue()
-                .assertHasValue()
-                .assertValue { it.countFail == 5 }
+            .awaitValue()
+            .assertHasValue()
+            .assertValue { it.countFail == 5 }
 
     }
 

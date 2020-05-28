@@ -2,7 +2,6 @@ package com.jonikoone.dictionaryforlearning.di
 
 import androidx.room.Room
 import com.jonikoone.databasemodule.database.AppDatabase
-import com.jonikoone.dictionaryforlearning.TestPresenter
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 import ru.terrakok.cicerone.Cicerone
@@ -16,13 +15,12 @@ val appModule = module {
     single { get<AppDatabase>().getLabelDao() }
     single { get<AppDatabase>().getWordDao() }
     single { get<AppDatabase>().getDictionaryDao() }
+    single { get<AppDatabase>().getDictionaryWithLabelDao() }
 
     //Navigation
     val cicerone = Cicerone.create()
     single { cicerone.router }
     single { cicerone.navigatorHolder }
-
-    single { TestPresenter() }
 
     /*//view models
     //main fragment

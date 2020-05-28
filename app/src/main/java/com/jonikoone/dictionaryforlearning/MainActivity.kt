@@ -42,11 +42,6 @@ class MainActivity : MvpAppCompatActivity(){
         navigationHolder.removeNavigator()
     }*/
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.d("$TAG onDestroyActivity $this")
-    }
-
     override fun onBackPressed() {
         router.exit()
         //super.onBackPressed()

@@ -16,8 +16,8 @@ data class Dictionary(
 
 @OpenForTesting
 data class DictionaryWithWords(
-        @Embedded val dictionary: Dictionary,
-        @Relation(
+    @Embedded val dictionary: Dictionary,
+    @Relation(
         parentColumn = "id_dictionary",
         entityColumn = "id_to_dictionary"
     )
@@ -26,9 +26,9 @@ data class DictionaryWithWords(
 
 @OpenForTesting
 data class DictionaryWithLabel(
-        @Embedded val dictionary: Dictionary,
-        @Relation(
-        parentColumn = "id_dictionary",
+    @Embedded val dictionary: Dictionary,
+    @Relation(
+        parentColumn = "id_dictionary_label",
         entityColumn = "id_label"
     )
     val label: Label?
